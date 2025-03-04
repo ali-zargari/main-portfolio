@@ -9,7 +9,7 @@ import * as THREE from 'three';
 function generatePoints(count: number) {
   const points = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  const scale = 10; // Reduced scale to make particles more concentrated
+  const scale = 15; // Increased scale to make particles cover more of the screen
   const color = new THREE.Color();
 
   for (let i = 0; i < count; i++) {
@@ -21,19 +21,19 @@ function generatePoints(count: number) {
     // Generate colorful particles with a mix of colors
     const colorChoice = Math.random();
     
-    if (colorChoice < 0.6) {
-      // 60% white/silver particles (base color)
+    if (colorChoice < 0.5) {
+      // 50% white/silver particles (base color)
       const grayValue = 0.7 + Math.random() * 0.3;
       color.setRGB(grayValue, grayValue, grayValue);
-    } else if (colorChoice < 0.75) {
-      // 15% cyan/blue particles
+    } else if (colorChoice < 0.7) {
+      // 20% cyan/blue particles
       color.setRGB(
         0.2 + Math.random() * 0.2,
         0.5 + Math.random() * 0.5,
         0.8 + Math.random() * 0.2
       );
     } else if (colorChoice < 0.9) {
-      // 15% purple particles
+      // 20% purple particles
       color.setRGB(
         0.5 + Math.random() * 0.3,
         0.2 + Math.random() * 0.2,
@@ -61,10 +61,10 @@ interface ParticleFieldProps {
   mouse: React.MutableRefObject<[number, number]>;
 }
 
-function ParticleField({ count = 12000, mouse }: ParticleFieldProps) {
+function ParticleField({ count = 20000, mouse }: ParticleFieldProps) {
   const pointsRef = useRef<THREE.Points>(null!);
-  // Track mouse position for interactive effects
-  const mousePosition = useRef<[number, number, number]>([0, 0, 0]);
+  // Track mouse position with smoothing for more natural interaction
+  const mousePosition = useRef<[number, number]>([0, 0]);
   
   // Memoize the generated points and colors so they don't change on each render
   const { positions, colors } = useMemo(() => generatePoints(count), [count]);
@@ -72,50 +72,44 @@ function ParticleField({ count = 12000, mouse }: ParticleFieldProps) {
   useFrame((state) => {
     if (!pointsRef.current) return;
     
-    // Update mouse position with smoothing
-    mousePosition.current[0] += (mouse.current[0] - mousePosition.current[0]) * 0.1;
-    mousePosition.current[1] += (mouse.current[1] - mousePosition.current[1]) * 0.1;
+    // Smooth mouse tracking
+    mousePosition.current[0] += (mouse.current[0] - mousePosition.current[0]) * 0.05;
+    mousePosition.current[1] += (mouse.current[1] - mousePosition.current[1]) * 0.05;
     
-    // Base rotation
-    pointsRef.current.rotation.x = state.clock.getElapsedTime() * 0.05;
-    pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.03;
-    
-    // Apply interactive wave effect based on mouse position
-    const positionArray = pointsRef.current.geometry.attributes.position.array as Float32Array;
+    // Base rotation - smoother and more subtle
     const time = state.clock.getElapsedTime();
+    pointsRef.current.rotation.x = Math.sin(time * 0.03) * 0.2;
+    pointsRef.current.rotation.y = Math.cos(time * 0.02) * 0.2;
+    
+    // Apply wave effect with subtle mouse influence
+    const positionArray = pointsRef.current.geometry.attributes.position.array as Float32Array;
     
     for (let i = 0; i < positionArray.length; i += 3) {
       const x = positionArray[i];
       const y = positionArray[i + 1];
       const z = positionArray[i + 2];
       
-      // Calculate distance from mouse (in 3D space)
-      const mouseX = mousePosition.current[0] * 5; // Scale for more dramatic effect
-      const mouseY = mousePosition.current[1] * 5;
-      
-      const dx = x - mouseX;
-      const dy = y - mouseY;
+      // Calculate distance from mouse position in 3D space
+      const dx = x - mousePosition.current[0] * 5; // Scale for better effect
+      const dy = y - mousePosition.current[1] * 5;
       const dist = Math.sqrt(dx * dx + dy * dy);
       
-      // Create a ripple effect from mouse position
-      const ripple = Math.sin(dist * 0.5 - time * 2) * 0.1;
-      const mouseFactor = Math.max(0, 1 - dist * 0.1); // Stronger effect closer to mouse
+      // Create a subtle attraction/repulsion effect
+      const mouseFactor = Math.max(0, 1 - dist * 0.15);
+      const attractionStrength = 0.02;
       
-      // Apply wave motion with mouse influence
-      positionArray[i + 1] = y + Math.sin(time * 0.5 + x * 0.5) * 0.05 + ripple * mouseFactor;
+      // Apply gentle wave motion with mouse influence
+      positionArray[i] = x + (mousePosition.current[0] * mouseFactor * attractionStrength);
+      positionArray[i + 1] = y + Math.sin(time * 0.3 + x * 0.2) * 0.05 + (mousePosition.current[1] * mouseFactor * attractionStrength);
       
-      // Add some vertical movement based on mouse Y position
-      positionArray[i + 2] = z + Math.cos(time * 0.3 + y * 0.2) * 0.03 + mousePosition.current[1] * mouseFactor * 0.2;
+      // Add some vertical movement with subtle mouse influence
+      positionArray[i + 2] = z + Math.cos(time * 0.2 + y * 0.1) * 0.03;
     }
     
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
     
-    // Enhanced mouse-based rotation
-    pointsRef.current.rotation.x += (mouse.current[1] * 0.002 - pointsRef.current.rotation.x) * 0.05;
-    pointsRef.current.rotation.y += (mouse.current[0] * 0.002 - pointsRef.current.rotation.y) * 0.05;
-    
-    // Add a slight tilt based on mouse position
-    pointsRef.current.rotation.z = mouse.current[0] * 0.05;
+    // Add subtle tilt based on mouse position
+    pointsRef.current.rotation.z += (mousePosition.current[0] * 0.1 - pointsRef.current.rotation.z) * 0.01;
   });
 
   return (
@@ -130,7 +124,7 @@ function ParticleField({ count = 12000, mouse }: ParticleFieldProps) {
       <PointMaterial
         transparent
         vertexColors
-        size={0.25} // Increased size for better visibility
+        size={0.3} // Increased size for better visibility
         sizeAttenuation={true}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -142,9 +136,6 @@ function ParticleField({ count = 12000, mouse }: ParticleFieldProps) {
 export default function ThreeBackground() {
   const mouse = useRef<[number, number]>([0, 0]);
   const [isClient, setIsClient] = useState(false);
-  const [mouseActive, setMouseActive] = useState(false);
-  const [mouseTrails, setMouseTrails] = useState<{id: number, x: number, y: number}[]>([]);
-  const trailIdRef = useRef(0);
   
   useEffect(() => {
     setIsClient(true);
@@ -156,65 +147,23 @@ export default function ThreeBackground() {
         (event.clientX / window.innerWidth) * 2 - 1,
         -(event.clientY / window.innerHeight) * 2 + 1
       ];
-      
-      // Set mouse as active when it moves
-      setMouseActive(true);
-      
-      // Add a new trail element
-      if (Math.random() > 0.6) { // Only add trail sometimes for performance
-        const newTrail = {
-          id: trailIdRef.current++,
-          x: event.clientX,
-          y: event.clientY
-        };
-        
-        setMouseTrails(prev => [...prev, newTrail]);
-        
-        // Remove trail after animation completes
-        setTimeout(() => {
-          setMouseTrails(prev => prev.filter(trail => trail.id !== newTrail.id));
-        }, 1000);
-      }
-      
-      // Reset mouse active state after a delay
-      clearTimeout(mouseActiveTimeout.current);
-      mouseActiveTimeout.current = setTimeout(() => {
-        setMouseActive(false);
-      }, 2000);
     };
-    
-    const mouseActiveTimeout = { current: null as any };
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      clearTimeout(mouseActiveTimeout.current);
     };
   }, []);
 
   if (!isClient) return null;
 
   return (
-    <>
-      <div className={`three-bg-container ${mouseActive ? 'mouse-active' : ''}`}>
-        <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-          <ambientLight intensity={1.0} /> {/* Increased light intensity */}
-          <ParticleField mouse={mouse} />
-          <fog attach="fog" args={['#0f0f1a', 8, 20]} /> {/* Updated fog color to match background */}
-        </Canvas>
-      </div>
-      
-      {/* Mouse trail elements */}
-      {mouseTrails.map(trail => (
-        <div 
-          key={trail.id}
-          className="mouse-trail"
-          style={{
-            left: `${trail.x}px`,
-            top: `${trail.y}px`
-          }}
-        />
-      ))}
-    </>
+    <div className="three-bg-container">
+      <Canvas camera={{ position: [0, 0, 5], fov: 90 }}> {/* Increased FOV for wider view */}
+        <ambientLight intensity={1.2} /> {/* Increased light intensity */}
+        <ParticleField mouse={mouse} />
+        <fog attach="fog" args={['#0f0f1a', 10, 25]} /> {/* Adjusted fog for better depth perception */}
+      </Canvas>
+    </div>
   );
 }
