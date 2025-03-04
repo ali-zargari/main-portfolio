@@ -1,41 +1,37 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Generate random points in a 3D space
+// Generate random points and colors in 3D space
 function generatePoints(count: number) {
   const points = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  const sizes = new Float32Array(count);
-  const scale = 25; // Even larger scale
+  const scale = 12; // Reduced scale to make particles more concentrated
   const color = new THREE.Color();
 
   for (let i = 0; i < count; i++) {
     const i3 = i * 3;
     points[i3] = (Math.random() - 0.5) * scale;
     points[i3 + 1] = (Math.random() - 0.5) * scale;
-    points[i3 + 2] = (Math.random() - 0.5) * scale * 0.5; // Flatter on z-axis
+    points[i3 + 2] = (Math.random() - 0.5) * scale;
 
-    // Generate much brighter colors
+    // Generate more vibrant colors with a gradient from cyan to purple
     const mixRatio = Math.random();
-    const hue = 0.6 + mixRatio * 0.2; // Blue to purple range
-    const saturation = 0.9; // More saturated
-    const lightness = 0.7 + mixRatio * 0.3; // Even brighter
-    
-    color.setHSL(hue, saturation, lightness);
-    
+    color.setRGB(
+      0.2 + mixRatio * 0.3,  // Red component - increased
+      0.3 + mixRatio * 0.3,  // Green component - increased
+      0.7 + mixRatio * 0.3   // Blue component - increased
+    );
+
     colors[i3] = color.r;
     colors[i3 + 1] = color.g;
     colors[i3 + 2] = color.b;
-    
-    // Vary the size of particles for more visual interest
-    sizes[i] = Math.random() * 0.5 + 0.5; // Between 0.5 and 1.0
   }
 
-  return { positions: points, colors, sizes };
+  return { positions: points, colors };
 }
 
 interface ParticleFieldProps {
@@ -43,37 +39,35 @@ interface ParticleFieldProps {
   mouse: React.MutableRefObject<[number, number]>;
 }
 
-function ParticleField({ count = 20000, mouse }: ParticleFieldProps) { // Even more particles
+function ParticleField({ count = 8000, mouse }: ParticleFieldProps) {
   const pointsRef = useRef<THREE.Points>(null!);
-  const { positions, colors, sizes } = generatePoints(count);
-  const [time, setTime] = useState(0);
+  // Memoize the generated points and colors so they don't change on each render.
+  const { positions, colors } = useMemo(() => generatePoints(count), [count]);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
     
-    setTime(state.clock.getElapsedTime());
+    // Rotate the entire point cloud
+    pointsRef.current.rotation.x = state.clock.getElapsedTime() * 0.05;
+    pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.03;
     
-    // More dramatic rotation
-    pointsRef.current.rotation.x = state.clock.getElapsedTime() * 0.1;
-    pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.08;
-    
-    // More dramatic wave effect
+    // Apply a subtle wave effect
     const positionArray = pointsRef.current.geometry.attributes.position.array as Float32Array;
     const time = state.clock.getElapsedTime();
     
     for (let i = 0; i < positionArray.length; i += 3) {
       const x = positionArray[i];
       const y = positionArray[i + 1];
-      // Much stronger wave motion
-      positionArray[i + 1] = y + Math.sin(time * 0.3 + x * 0.2) * 0.15;
+      // Enhanced wave motion
+      positionArray[i + 1] = y + Math.sin(time * 0.5 + x * 0.5) * 0.05;
     }
     
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
     
-    // Even more responsive mouse movement
+    // Rotate based on mouse movement - enhanced effect
     if (mouse.current) {
-      pointsRef.current.rotation.x += (mouse.current[1] * 0.002 - pointsRef.current.rotation.x) * 0.15;
-      pointsRef.current.rotation.y += (mouse.current[0] * 0.002 - pointsRef.current.rotation.y) * 0.15;
+      pointsRef.current.rotation.x += (mouse.current[1] * 0.001 - pointsRef.current.rotation.x) * 0.05;
+      pointsRef.current.rotation.y += (mouse.current[0] * 0.001 - pointsRef.current.rotation.y) * 0.05;
     }
   });
 
@@ -86,21 +80,13 @@ function ParticleField({ count = 20000, mouse }: ParticleFieldProps) { // Even m
         count={positions.length / 3}
         itemSize={3}
       />
-      {/* Attach the sizes as a buffer attribute */}
-      <bufferAttribute
-        attach="attributes.size"
-        args={[sizes, 1]}
-        count={sizes.length}
-        itemSize={1}
-      />
       <PointMaterial
         transparent
         vertexColors
-        size={0.6} // Even larger point size
+        size={0.15} // Increased particle size
         sizeAttenuation={true}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
-        alphaMap={new THREE.TextureLoader().load('/particle.png')}
       />
     </Points>
   );
@@ -112,6 +98,7 @@ export default function ThreeBackground() {
   
   useEffect(() => {
     setIsClient(true);
+    console.log('Three.js background initialized');
     
     const handleMouseMove = (event: MouseEvent) => {
       // Normalize mouse position to be between -1 and 1
@@ -128,11 +115,9 @@ export default function ThreeBackground() {
   if (!isClient) return null;
 
   return (
-    <div className="fixed inset-0 z-0">
-      <Canvas camera={{ position: [0, 0, 3], fov: 90 }}>
-        <color attach="background" args={['#000000']} />
-        <fog attach="fog" args={['#000000', 1, 25]} />
-        <ambientLight intensity={1.5} />
+    <div className="three-bg-container">
+      <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
+        <ambientLight intensity={0.8} /> {/* Increased light intensity */}
         <ParticleField mouse={mouse} />
       </Canvas>
     </div>

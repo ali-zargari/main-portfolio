@@ -69,11 +69,10 @@
 }
 
 body {
-  max-width: 100vw;
+  background: radial-gradient(circle at center, #111 0%, #000 100%);
+  color: var(--foreground);
+  font-family: var(--font-sans);
   overflow-x: hidden;
-  background: linear-gradient(to bottom, #000000, #050520, #000000);
-  color: var(--text);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   cursor: default;
 }
 
@@ -264,4 +263,12 @@ html {
   background: linear-gradient(-45deg, #000000, #111111, #222222, #111111);
   background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
+}
+
+/* Enhance the canvas container */
+.three-bg-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(circle at center, rgba(0, 255, 255, 0.05) 0%, rgba(155, 89, 182, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
 }
