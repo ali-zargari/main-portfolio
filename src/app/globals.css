@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
+  --background: #101020;
   --foreground: #FFFFFF;
   --accent-blue: #00FFFF;
   --accent-purple: #9B59B6;
@@ -69,7 +69,7 @@
 }
 
 body {
-  background: radial-gradient(circle at center, #111 0%, #000 100%);
+  background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f1a 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
@@ -270,5 +270,35 @@ html {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: radial-gradient(circle at center, rgba(0, 255, 255, 0.05) 0%, rgba(155, 89, 182, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, rgba(100, 100, 100, 0.03) 50%, rgba(0, 0, 0, 0) 100%);
+  transition: background 0.5s ease;
+}
+
+/* Add a subtle glow effect when mouse is active */
+.three-bg-container.mouse-active {
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, rgba(100, 100, 100, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+}
+
+/* Mouse trail effect */
+@keyframes mouseTrail {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.mouse-trail {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, rgba(0, 255, 255, 0.1) 40%, transparent 70%);
+  transform: translate(-50%, -50%);
+  animation: mouseTrail 1s forwards;
+  z-index: 1;
 }
