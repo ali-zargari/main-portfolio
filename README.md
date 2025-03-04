@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ali Zargari Portfolio
+
+A bold, provocative, and deeply personal portfolio for Ali Zargari—a self-made systems engineer whose work blurs the line between survival and innovation.
+
+## Overview
+
+This portfolio is designed to challenge, intrigue, and provoke thought. It's not just a showcase of work; it's an immersive experience that reflects the mindset of a systems engineer who has fought for mastery and refuses mediocrity.
+
+## Key Features
+
+- **Subliminal Messaging**: Quick, flickering words that fade in the background during scrolling—representing the driving forces behind the work.
+- **Warning Modal**: First-time visitors are greeted with a security clearance screen that sets the tone for the experience.
+- **Glitch Effects**: Deliberate micro-glitches on text and images, as if the site is self-aware and recalibrating.
+- **Offbeat Section Titles**: Unconventional naming for traditional sections (e.g., "Classified Operations" instead of "Projects").
+- **Easter Eggs**: Hidden hotkeys that reveal secret messages and personal notes.
+- **"The Cost" Section**: A subtle section listing what this life of mastery takes.
+- **Stark Aesthetic**: High contrast design with deep shadows and piercing lights, resembling the digital core of a machine built to keep chaos at bay.
+
+## Technical Implementation
+
+- **Framework**: Next.js with App Router
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
+- **Animations**: Custom CSS animations and React-based interactive elements
+
+## Pages
+
+- **Home**: The entry point with a terminal-like introduction and main navigation.
+- **Origin Story**: Personal background and journey.
+- **Classified Operations**: Portfolio projects presented as classified systems.
+- **Signal Noise**: Blog/thoughts section with filterable content.
+- **The Cost**: Detailed exploration of the sacrifices made for mastery.
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Run the development server:
+   ```
+   npm run dev
+   ```
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Build for Production
+
+```
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Design Philosophy
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This portfolio is designed to unsettle in the best way—to make visitors question if they're on a portfolio or inside a prototype, and to leave an aftertaste of ambition, exhaustion, and awe.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+"This is not a site you forget. This is Olympus."
