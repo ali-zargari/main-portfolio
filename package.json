@@ -30,5 +30,15 @@
     "eslint-config-next": "15.2.1",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@react-spring/three": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    },
+    "@react-spring/web": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
   }
 }

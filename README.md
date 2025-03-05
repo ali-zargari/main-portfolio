@@ -1,5 +1,6 @@
 # Ali Zargari Portfolio
 
+<<<<<<< HEAD
 A bold, provocative, and deeply personal portfolio for Ali Zargari—a self-made systems engineer whose work blurs the line between survival and innovation.
 
 ## Overview
@@ -72,3 +73,5 @@ npm run start
 This portfolio is designed to unsettle in the best way—to make visitors question if they're on a portfolio or inside a prototype, and to leave an aftertaste of ambition, exhaustion, and awe.
 
 "This is not a site you forget. This is Olympus."
+=======
+>>>>>>> e754ae4767c6fb6a16618720a889c84e6ee8c1eb

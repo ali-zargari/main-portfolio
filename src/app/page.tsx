@@ -175,30 +175,51 @@ function GitHubContributions() {
   const { weeks, monthLabels } = generateContributionGrid();
 
   return (
-    <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-6 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-bold text-white">
-          {contributionData.totalContributions} contributions in the last year
-        </h3>
+    <div className="bg-[#0d1117] border border-[#30363d] rounded-lg p-6 max-w-5xl mx-auto backdrop-blur-sm shadow-xl relative overflow-hidden group">
+      {/* Subtle glow effect on hover */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#9B59B6]/0 via-[#9B59B6]/5 to-[#9B59B6]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+      
+      <div className="flex flex-col mb-8">
+        <div className="flex justify-between items-center border-b border-[#30363d] pb-4 mb-4">
+          <h3 className="text-xl font-bold text-[#9B59B6] font-mono">
+            GITHUB CONTRIBUTIONS
+          </h3>
+          <a 
+            href="https://github.com/ali-zargari" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center text-white/70 hover:text-white transition-colors duration-300 text-sm font-mono"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
+            @ali-zargari
+          </a>
+        </div>
+        <div className="flex justify-between items-center">
+          <div className="text-white/80 font-mono text-sm">
+            {contributionData.totalContributions} contributions in the last year
+          </div>
+        </div>
       </div>
       
       {contributionData.simulatedData && (
-        <div className="mb-8 p-3 border border-yellow-600 bg-yellow-900/30 rounded-md">
+        <div className="mb-8 p-3 border border-[#9B59B6]/30 bg-[#9B59B6]/10 rounded-md">
           <div className="flex items-start">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-yellow-500 mr-2 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-[#9B59B6] mr-2 mt-0.5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
             </svg>
             <div>
-              <p className="text-yellow-400 font-medium">Using simulated data</p>
-              <p className="text-yellow-300/70 text-sm mt-1">
+              <p className="text-[#9B59B6] font-medium">Using simulated data</p>
+              <p className="text-white/70 text-sm mt-1">
                 {contributionData.error || 'GitHub API token not configured'}
               </p>
               <div className="mt-4">
                 <button 
                   onClick={() => fetchContributions()} 
-                  className="text-xs bg-yellow-600/50 hover:bg-yellow-600 text-white px-2 py-1 rounded-sm transition-colors"
+                  className="text-xs bg-[#9B59B6] hover:bg-[#9B59B6]/80 text-white px-3 py-1 rounded-sm transition-colors font-mono"
                 >
-                  Try again
+                  TRY AGAIN
                 </button>
               </div>
             </div>
@@ -208,7 +229,7 @@ function GitHubContributions() {
 
       {/* Debug info */}
       {!contributionData.simulatedData && debugInfo && (
-        <div className="mb-4 p-2 bg-black/30 rounded text-xs text-white/70">
+        <div className="mb-4 p-2 bg-black/30 rounded text-xs text-white/70 font-mono">
           {debugInfo}
         </div>
       )}
@@ -219,7 +240,7 @@ function GitHubContributions() {
           {/* Month labels */}
           <div className="flex mb-2 pl-10">
             {monthLabels.map((month, i) => (
-              <div key={i} className="flex-1 text-center text-xs text-white/50">
+              <div key={i} className="flex-1 text-center text-xs text-white/50 font-mono">
                 {month.name}
               </div>
             ))}
@@ -230,7 +251,7 @@ function GitHubContributions() {
             {/* Day labels */}
             <div className="pr-2">
               {[1, 2, 3, 4, 5, 6, 0].map((dayIndex) => (
-                <div key={dayIndex} className="h-[11px] text-xs text-white/50 flex items-center" style={{ marginTop: dayIndex === 0 ? '0' : '2px', marginBottom: dayIndex === 6 ? '0' : '2px' }}>
+                <div key={dayIndex} className="h-[11px] text-xs text-white/50 flex items-center font-mono" style={{ marginTop: dayIndex === 0 ? '0' : '2px', marginBottom: dayIndex === 6 ? '0' : '2px' }}>
                   {daysOfWeek[dayIndex]}
                 </div>
               ))}
@@ -245,7 +266,7 @@ function GitHubContributions() {
                     return (
                       <div 
                         key={dayIndex}
-                        className={`w-[10px] h-[10px] rounded-sm ${day ? getContributionColor(day.count) : 'bg-transparent'}`}
+                        className={`w-[10px] h-[10px] rounded-sm ${day ? getContributionColor(day.count) : 'bg-transparent'} hover:ring-1 hover:ring-[#9B59B6]/50 transition-all duration-150`}
                         title={day ? `${day.count} contributions on ${day.dateStr}` : undefined}
                       ></div>
                     );
@@ -256,14 +277,29 @@ function GitHubContributions() {
           </div>
 
           {/* Legend */}
-          <div className="flex justify-end items-center mt-4">
-            <div className="text-xs text-white/50 mr-2">Less</div>
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#161b22] mx-[1px]"></div>
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#0e4429] mx-[1px]"></div>
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#006d32] mx-[1px]"></div>
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#26a641] mx-[1px]"></div>
-            <div className="w-[10px] h-[10px] rounded-sm bg-[#39d353] mx-[1px]"></div>
-            <div className="text-xs text-white/50 ml-2">More</div>
+          <div className="flex justify-between items-center mt-6 pt-3 border-t border-[#30363d]">
+            <a 
+              href="https://github.com/ali-zargari" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs text-[#9B59B6] hover:text-[#9B59B6]/80 transition-colors font-mono flex items-center"
+            >
+              <span>View on GitHub</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+            </a>
+            <div className="flex items-center">
+              <div className="text-xs text-white/50 mr-2 font-mono">Less</div>
+              <div className="w-[10px] h-[10px] rounded-sm bg-[#161b22] mx-[1px]"></div>
+              <div className="w-[10px] h-[10px] rounded-sm bg-[#0e4429] mx-[1px]"></div>
+              <div className="w-[10px] h-[10px] rounded-sm bg-[#006d32] mx-[1px]"></div>
+              <div className="w-[10px] h-[10px] rounded-sm bg-[#26a641] mx-[1px]"></div>
+              <div className="w-[10px] h-[10px] rounded-sm bg-[#39d353] mx-[1px]"></div>
+              <div className="text-xs text-white/50 ml-2 font-mono">More</div>
+            </div>
           </div>
         </div>
       </div>
