@@ -1,3 +1,6 @@
+export const runtime = 'edge';
+
+
 import { NextResponse } from 'next/server';
 
 // GitHub GraphQL API endpoint
