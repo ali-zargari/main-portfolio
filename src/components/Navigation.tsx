@@ -21,7 +21,7 @@ export default function Navigation() {
 
   const navItems = [
     { name: 'ORIGIN STORY', path: '/origin-story' },
-    { name: 'CLASSIFIED OPERATIONS', path: '/classified-operations' },
+    { name: 'INITIATIVES', path: '/quantum-initiatives' },
     { name: 'SIGNAL NOISE', path: '/signal-noise' },
     { name: 'THE COST', path: '/the-cost' },
   ];

@@ -137,7 +137,7 @@ export default function Home() {
           style={fadeInButtons}
         >
           <Link 
-            href="/classified-operations" 
+            href="/quantum-initiatives" 
             className="bg-[#9B59B6] text-white px-6 py-3 font-mono hover:bg-opacity-80 transition-all duration-300 relative group"
           >
             <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
@@ -340,7 +340,7 @@ export default function Home() {
                 {/* View all projects button */}
                 <div className="mt-8 text-center">
                   <Link 
-                    href="/classified-operations" 
+                    href="/quantum-initiatives" 
                     className="inline-block px-6 py-2 border border-[#00FFFF]/30 text-[#00FFFF] text-xs font-mono hover:bg-[#00FFFF]/10 transition-all duration-300 rounded group relative overflow-hidden hover-glow"
                   >
                     <span className="relative z-10">VIEW ALL PROJECTS</span>
@@ -364,7 +364,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Link 
-              href="/classified-operations" 
+              href="/quantum-initiatives" 
               className="bg-[#9B59B6] text-white px-8 py-4 font-mono hover:bg-opacity-80 transition-all duration-300"
             >
               VIEW PROJECTS
