@@ -9,7 +9,7 @@ import * as THREE from 'three';
 function generatePoints(count: number) {
   const points = new Float32Array(count * 3);
   const colors = new Float32Array(count * 3);
-  const scale = 15; // Increased scale to make particles cover more of the screen
+  const scale = 35; // Increased scale to make particles cover more of the screen
   const color = new THREE.Color();
 
   for (let i = 0; i < count; i++) {
@@ -124,7 +124,8 @@ function ParticleField({ count = 20000, mouse }: ParticleFieldProps) {
       <PointMaterial
         transparent
         vertexColors
-        size={0.3} // Increased size for better visibility
+        size={0.4} // Increased size for better visibility
+        opacity={0.8}
         sizeAttenuation={true}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -159,8 +160,10 @@ export default function ThreeBackground() {
 
   return (
     <div className="three-bg-container">
-      <Canvas camera={{ position: [0, 0, 5], fov: 90 }}> {/* Increased FOV for wider view */}
-        <ambientLight intensity={1.2} /> {/* Increased light intensity */}
+      <Canvas 
+      style={{background: '#060612'}}
+      camera={{ position: [0, 0, 5], fov: 90 }}> {/* Increased FOV for wider view */}
+        <ambientLight intensity={5} /> {/* Increased light intensity */}
         <ParticleField mouse={mouse} />
         <fog attach="fog" args={['#0f0f1a', 10, 25]} /> {/* Adjusted fog for better depth perception */}
       </Canvas>
