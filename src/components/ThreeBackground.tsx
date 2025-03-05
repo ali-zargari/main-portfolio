@@ -59,12 +59,16 @@ function generatePoints(count: number) {
 interface ParticleFieldProps {
   count?: number;
   mouse: React.MutableRefObject<[number, number]>;
+  scrollY: React.MutableRefObject<number>;
 }
 
-function ParticleField({ count = 20000, mouse }: ParticleFieldProps) {
+function ParticleField({ count = 20000, mouse, scrollY }: ParticleFieldProps) {
   const pointsRef = useRef<THREE.Points>(null!);
   // Track mouse position with smoothing for more natural interaction
   const mousePosition = useRef<[number, number]>([0, 0]);
+  // Track scroll velocity for momentum effects
+  const scrollVelocity = useRef(0);
+  const lastScrollY = useRef(0);
   
   // Memoize the generated points and colors so they don't change on each render
   const { positions, colors } = useMemo(() => generatePoints(count), [count]);
@@ -76,12 +80,28 @@ function ParticleField({ count = 20000, mouse }: ParticleFieldProps) {
     mousePosition.current[0] += (mouse.current[0] - mousePosition.current[0]) * 0.05;
     mousePosition.current[1] += (mouse.current[1] - mousePosition.current[1]) * 0.05;
     
-    // Base rotation - smoother and more subtle
+    // Calculate scroll velocity with smoothing
+    const scrollDelta = scrollY.current - lastScrollY.current;
+    scrollVelocity.current = scrollVelocity.current * 0.95 + scrollDelta * 0.05;
+    lastScrollY.current = scrollY.current;
+    
+    // Base rotation - exactly as in original code
     const time = state.clock.getElapsedTime();
     pointsRef.current.rotation.x = Math.sin(time * 0.03) * 0.2;
     pointsRef.current.rotation.y = Math.cos(time * 0.02) * 0.2;
     
-    // Apply wave effect with subtle mouse influence
+    // Add scroll-based rotation on top
+    const scrollInfluence = scrollY.current * Math.PI * 2;
+    pointsRef.current.rotation.x += scrollInfluence * 0.2;
+    pointsRef.current.rotation.y += scrollInfluence * 0.3;
+    
+    // Scale effect based on scroll velocity
+    const scrollSpeed = Math.min(Math.abs(scrollVelocity.current) * 5, 0.5);
+    const scaleBase = 1.0;
+    const scaleFactor = scaleBase + Math.min(scrollSpeed * 0.07, 0.1);
+    pointsRef.current.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    
+    // Apply wave effect with subtle mouse influence - exactly as in original code
     const positionArray = pointsRef.current.geometry.attributes.position.array as Float32Array;
     
     for (let i = 0; i < positionArray.length; i += 3) {
@@ -98,18 +118,22 @@ function ParticleField({ count = 20000, mouse }: ParticleFieldProps) {
       const mouseFactor = Math.max(0, 1 - dist * 0.15);
       const attractionStrength = 0.02;
       
-      // Apply gentle wave motion with mouse influence
+      // Apply gentle wave motion with mouse influence - exactly as in original code
       positionArray[i] = x + (mousePosition.current[0] * mouseFactor * attractionStrength);
       positionArray[i + 1] = y + Math.sin(time * 0.3 + x * 0.2) * 0.05 + (mousePosition.current[1] * mouseFactor * attractionStrength);
       
-      // Add some vertical movement with subtle mouse influence
+      // Add some vertical movement with subtle mouse influence - exactly as in original code
       positionArray[i + 2] = z + Math.cos(time * 0.2 + y * 0.1) * 0.03;
     }
     
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
     
-    // Add subtle tilt based on mouse position
+    // Add subtle tilt based on mouse position - exactly as in original code
     pointsRef.current.rotation.z += (mousePosition.current[0] * 0.1 - pointsRef.current.rotation.z) * 0.01;
+    
+    // Add camera effects based on scroll
+    state.camera.position.y = -scrollY.current * 1;
+    state.camera.lookAt(0, -scrollY.current * 1, 0);
   });
 
   return (
@@ -124,7 +148,7 @@ function ParticleField({ count = 20000, mouse }: ParticleFieldProps) {
       <PointMaterial
         transparent
         vertexColors
-        size={0.4} // Increased size for better visibility
+        size={0.4}
         opacity={0.8}
         sizeAttenuation={true}
         depthWrite={false}
@@ -136,6 +160,7 @@ function ParticleField({ count = 20000, mouse }: ParticleFieldProps) {
 
 export default function ThreeBackground() {
   const mouse = useRef<[number, number]>([0, 0]);
+  const scrollY = useRef(0);
   const [isClient, setIsClient] = useState(false);
   
   useEffect(() => {
@@ -150,9 +175,18 @@ export default function ThreeBackground() {
       ];
     };
     
+    const handleScroll = () => {
+      // Normalize scroll position to create smooth transitions
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      scrollY.current = window.scrollY / maxScroll;
+    };
+    
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('scroll', handleScroll);
+    
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
@@ -164,7 +198,7 @@ export default function ThreeBackground() {
       style={{background: '#060612'}}
       camera={{ position: [0, 0, 5], fov: 90 }}> {/* Increased FOV for wider view */}
         <ambientLight intensity={5} /> {/* Increased light intensity */}
-        <ParticleField mouse={mouse} />
+        <ParticleField mouse={mouse} scrollY={scrollY} />
         <fog attach="fog" args={['#0f0f1a', 10, 25]} /> {/* Adjusted fog for better depth perception */}
       </Canvas>
     </div>
