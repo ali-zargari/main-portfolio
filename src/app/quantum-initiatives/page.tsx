@@ -1,85 +1,32 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import Navigation from '@/components/Navigation';
-import GlitchText from '@/components/GlitchText';
 import SubliminalMessages from '@/components/SubliminalMessages';
 import EasterEgg from '@/components/EasterEgg';
+import Navigation from '@/components/Navigation';
 import TheCost from '@/components/TheCost';
+import GlitchText from '@/components/GlitchText';
+import { projects, projectDetails } from '@/data/projects';
 
-// Real project data
-const projects = [
-  {
-    id: 'olympus',
-    title: 'OLYMPUS',
-    description: 'AI-powered smart home system with IoT integration. A comprehensive solution that combines machine learning algorithms with connected devices to create an intelligent living environment.',
-    tags: ['AI', 'IoT', 'Machine Learning', 'Smart Home'],
-    image: '/olympus.jpg',
-    status: 'ACTIVE',
-    year: '2023',
-    color: '#00FFFF'
-  },
-  {
-    id: 'socialsync',
-    title: 'SOCIALSYNC',
-    description: 'AI-powered assistive tool for ASD therapy. Leverages computer vision and machine learning to help individuals with Autism Spectrum Disorder improve social interaction skills.',
-    tags: ['AI', 'Computer Vision', 'Assistive Technology', 'Healthcare'],
-    image: '/socialsync.jpg',
-    status: 'COMPLETE',
-    year: '2022',
-    color: '#9B59B6'
-  },
-  {
-    id: 'memento',
-    title: 'MEMENTO',
-    description: 'IoT solution for memory impairment assistance. A network of connected devices and sensors that provide contextual reminders and assistance for individuals with memory impairments.',
-    tags: ['IoT', 'Assistive Technology', 'Healthcare', 'Embedded Systems'],
-    image: '/memento.jpg',
-    status: 'ACTIVE',
-    year: '2022',
-    color: '#FFFFFF'
-  },
-  {
-    id: 'nexus',
-    title: 'NEXUS',
-    description: 'A distributed system for real-time data processing and analysis, capable of handling millions of events per second with sub-millisecond latency.',
-    tags: ['Distributed Systems', 'Real-time Processing', 'Scalability'],
-    image: '/nexus.jpg',
-    status: 'OPERATIONAL',
-    year: '2021',
-    color: '#00FFFF'
-  }
-];
+// Define types for project and project details
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  image: string;
+  status: string;
+  year: string;
+  color: string;
+}
 
-// Project-specific details
-const projectDetails = {
-  olympus: {
-    fullDescription: "OLYMPUS is an AI-powered smart home system that integrates various IoT devices to create a seamless, intelligent living environment. The system learns from user behavior patterns and environmental data to optimize comfort, energy efficiency, and security.",
-    challenges: "Developing a unified protocol for diverse IoT devices while ensuring data privacy and system security presented significant challenges. The system needed to be both powerful and user-friendly.",
-    technologies: ["TensorFlow", "Python", "MQTT", "React", "Node.js", "MongoDB", "Raspberry Pi", "Arduino"],
-    achievements: ["Reduced energy consumption by 30%", "Improved home security response time by 45%", "Seamless integration with 50+ IoT device types"]
-  },
-  socialsync: {
-    fullDescription: "SocialSync is an assistive technology designed to help individuals with Autism Spectrum Disorder improve social interaction skills. Using computer vision and machine learning, it analyzes facial expressions and social cues in real-time, providing gentle feedback through a discreet wearable device.",
-    challenges: "Creating algorithms sensitive enough to detect subtle social cues while being robust against false positives was particularly challenging. The system needed to be non-intrusive and comfortable for daily use.",
-    technologies: ["OpenCV", "TensorFlow", "Python", "Flutter", "Firebase", "Wearable Tech", "Edge Computing"],
-    achievements: ["Improved social interaction metrics by 40% in clinical trials", "Successfully deployed in 5 therapy centers", "Featured in Journal of Assistive Technologies"]
-  },
-  memento: {
-    fullDescription: "Memento is an IoT ecosystem designed to assist individuals with memory impairments. It combines environmental sensors, wearable devices, and strategically placed displays to provide contextual reminders and assistance based on the user's location and routine.",
-    challenges: "Balancing the need for constant monitoring with privacy concerns was a major challenge. The system needed to be reliable enough for healthcare applications while remaining affordable.",
-    technologies: ["IoT Sensors", "BLE Beacons", "React Native", "Node.js", "MongoDB", "AWS IoT", "Edge AI"],
-    achievements: ["Reduced missed medication instances by 85%", "Improved independent living metrics by 60%", "Deployed in 3 assisted living facilities"]
-  },
-  nexus: {
-    fullDescription: "NEXUS is a distributed system for real-time data processing and analysis, capable of handling millions of events per second with sub-millisecond latency. It provides a scalable infrastructure for applications requiring immediate insights from high-volume data streams.",
-    challenges: "Achieving consistent sub-millisecond performance at scale required innovative approaches to distributed computing. Ensuring fault tolerance without compromising speed was particularly challenging.",
-    technologies: ["Kafka", "Rust", "gRPC", "Kubernetes", "Prometheus", "ClickHouse", "Redis", "NATS"],
-    achievements: ["Processes 5M+ events per second", "99.999% uptime over 12 months", "70% reduction in infrastructure costs compared to previous solution"]
-  }
-};
+interface ProjectDetail {
+  fullDescription: string;
+  challenges: string;
+  technologies: string[];
+  achievements: string[];
+}
 
 export default function QuantumInitiatives() {
   const [loaded, setLoaded] = useState(false);
@@ -157,7 +104,7 @@ export default function QuantumInitiatives() {
       <section className="py-20 relative z-10">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
-            {projects.map((project) => (
+            {projects.map((project: Project) => (
               <div 
                 key={project.id}
                 className={`group relative cursor-pointer transition-all duration-300 transform hover:-translate-y-1 ${
@@ -185,7 +132,7 @@ export default function QuantumInitiatives() {
                   <p className="text-sm text-white/70 mb-6 max-w-md">{project.description}</p>
                   
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.map((tag, index) => (
+                    {project.tags.map((tag: string, index: number) => (
                       <span 
                         key={index} 
                         className="text-xs bg-black/50 backdrop-blur-sm px-2 py-1 rounded-sm font-mono border border-white/10"
@@ -211,10 +158,10 @@ export default function QuantumInitiatives() {
           {/* Project Details Section */}
           <div ref={projectsRef} className={`transition-all duration-500 ${selectedProject ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
             {selectedProject && (() => {
-              const project = projects.find(p => p.id === selectedProject);
+              const project = projects.find((p: Project) => p.id === selectedProject);
               if (!project) return null;
               
-              const details = projectDetails[project.id as keyof typeof projectDetails];
+              const details = projectDetails[project.id as keyof typeof projectDetails] as ProjectDetail;
               
               return (
                 <div className="bg-black/50 backdrop-blur-md border border-white/10 p-8 rounded-lg">
@@ -251,7 +198,7 @@ export default function QuantumInitiatives() {
                       <div>
                         <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>ACHIEVEMENTS</h3>
                         <ul className="space-y-3">
-                          {details.achievements.map((achievement, index) => (
+                          {details.achievements.map((achievement: string, index: number) => (
                             <li key={index} className="flex items-start">
                               <span className="text-green-400 mr-2">✓</span>
                               <span className="text-white/80">{achievement}</span>
@@ -265,7 +212,7 @@ export default function QuantumInitiatives() {
                       <div className="mb-8">
                         <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>TECHNOLOGIES</h3>
                         <div className="flex flex-wrap gap-3">
-                          {details.technologies.map((tech, index) => (
+                          {details.technologies.map((tech: string, index: number) => (
                             <span 
                               key={index} 
                               className="px-3 py-2 bg-black/70 text-white/90 rounded border border-white/10 text-sm hover:border-white/30 transition-colors"

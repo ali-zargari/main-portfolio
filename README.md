@@ -11,10 +11,11 @@ This portfolio is designed to challenge, intrigue, and provoke thought. It's not
 - **Subliminal Messaging**: Quick, flickering words that fade in the background during scrolling—representing the driving forces behind the work.
 - **Warning Modal**: First-time visitors are greeted with a security clearance screen that sets the tone for the experience.
 - **Glitch Effects**: Deliberate micro-glitches on text and images, as if the site is self-aware and recalibrating.
-- **Offbeat Section Titles**: Unconventional naming for traditional sections (e.g., "Classified Operations" instead of "Projects").
+- **Offbeat Section Titles**: Unconventional naming for traditional sections (e.g., "Quantum Initiatives" instead of "Projects").
 - **Easter Eggs**: Hidden hotkeys that reveal secret messages and personal notes.
 - **"The Cost" Section**: A subtle section listing what this life of mastery takes.
 - **Stark Aesthetic**: High contrast design with deep shadows and piercing lights, resembling the digital core of a machine built to keep chaos at bay.
+- **GitHub Contribution Graph**: Real-time display of coding activity directly from GitHub's API.
 
 ## Technical Implementation
 
@@ -22,12 +23,13 @@ This portfolio is designed to challenge, intrigue, and provoke thought. It's not
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
 - **Animations**: Custom CSS animations and React-based interactive elements
+- **API Integration**: GitHub GraphQL API for contribution data
 
 ## Pages
 
 - **Home**: The entry point with a terminal-like introduction and main navigation.
 - **Origin Story**: Personal background and journey.
-- **Classified Operations**: Portfolio projects presented as classified systems.
+- **Quantum Initiatives**: Portfolio projects presented as advanced technological systems.
 - **Signal Noise**: Blog/thoughts section with filterable content.
 - **The Cost**: Detailed exploration of the sacrifices made for mastery.
 
@@ -38,11 +40,25 @@ This portfolio is designed to challenge, intrigue, and provoke thought. It's not
    ```
    npm install
    ```
-3. Run the development server:
+3. Set up environment variables:
+   - Copy `.env.local.example` to `.env.local`
+   - Add your GitHub Personal Access Token (create one at https://github.com/settings/tokens with `read:user` scope)
+4. Run the development server:
    ```
    npm run dev
    ```
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## GitHub Contribution Graph
+
+The portfolio includes a GitHub contribution graph similar to the one on your GitHub profile. To set this up:
+
+1. Create a GitHub Personal Access Token with the `read:user` scope
+2. Add the token to your `.env.local` file as `GITHUB_TOKEN=your_token_here`
+3. By default, it will show contributions for the GitHub user 'alizargari'
+4. To change the username, modify the `username` state in the `GitHubContributions` component
+
+If no token is provided, the application will display simulated contribution data.
 
 ## Build for Production
 
