@@ -10,7 +10,8 @@
     "build": "next build --no-lint",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "wrangler pages deploy .vercel/output/static --project-name=Portfolio"
+    "deploy": "wrangler pages deploy .vercel/output/static --project-name=Portfolio",
+    "cf-build": "next build --no-lint && next-on-pages"
   },
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.8",
