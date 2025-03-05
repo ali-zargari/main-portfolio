@@ -2,13 +2,18 @@
   "name": "portfolio",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.11.1"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --no-lint",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "wrangler pages deploy .vercel/output/static --project-name=Portfolio"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.13.8",
     "@react-spring/three": "^9.7.5",
     "@react-spring/web": "^9.7.5",
     "@react-three/drei": "^10.0.3",
