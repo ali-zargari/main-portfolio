@@ -468,6 +468,8 @@ export default function Home() {
       <ThreeBackground />
       
       {/* Components that appear on all pages */}
+      <SubliminalMessages />
+      <EasterEgg />
       <Navigation />
 
       {/* Hero section */}
@@ -852,6 +854,9 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* The Cost component */}
+      <TheCost />
     </main>
   );
 }
