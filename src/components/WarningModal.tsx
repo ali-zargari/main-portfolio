@@ -57,17 +57,19 @@ export default function WarningModal() {
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00FFFF] to-[#9B59B6]">Ali Zargari</div>
+          <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#94A3B8] to-[#9B59B6]">Ali Zargari</div>
           <div className="text-xs font-mono opacity-70">Software Engineer</div>
         </div>
         
         {!showContent ? (
           <div className="space-y-4 py-4">
             <div className="text-sm mb-2">Loading portfolio...</div>
-            <div className="w-full bg-[#222] h-1.5 rounded-sm overflow-hidden">
+            <div 
+              className="h-1 w-full mt-2 mb-4 rounded-full overflow-hidden"
+            >
               <div 
-                className="bg-gradient-to-r from-[#00FFFF] to-[#9B59B6] h-full"
-                style={{ width: `${loadingProgress}%`, transition: 'width 0.2s ease' }}
+                className="bg-gradient-to-r from-[#94A3B8] to-[#9B59B6] h-full"
+                style={{ width: `${loadingProgress}%`, transition: 'width 0.5s ease-in-out' }}
               ></div>
             </div>
             <div className="text-xs opacity-70">{loadingProgress}% complete</div>
@@ -82,7 +84,7 @@ export default function WarningModal() {
             <div className="flex justify-end">
               <button 
                 onClick={handleProceed}
-                className="bg-gradient-to-r from-[#00FFFF] to-[#9B59B6] hover:opacity-90 text-white px-6 py-2 transition-all duration-300 text-sm font-medium"
+                className="bg-gradient-to-r from-[#94A3B8] to-[#9B59B6] hover:opacity-90 text-white px-6 py-2 transition-all duration-300 text-sm font-medium"
               >
                 Enter Portfolio
               </button>
@@ -91,7 +93,7 @@ export default function WarningModal() {
         )}
         
         {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#00FFFF] to-transparent opacity-50"></div>
+        <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#94A3B8] to-transparent opacity-50"></div>
         <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-[#9B59B6] to-transparent opacity-50"></div>
       </div>
     </div>

@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import GlitchText from './GlitchText';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -35,7 +34,7 @@ export default function Navigation() {
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="text-foreground font-mono text-xl relative group">
           <span className="absolute -inset-1 bg-accent opacity-0 group-hover:opacity-20 transition-opacity duration-300 rounded"></span>
-          <GlitchText text="ALI ZARGARI" tag="span" glitchIntensity={0.2} />
+          <span>ALI ZARGARI</span>
           <span className="text-accent text-xs ml-1 opacity-70">v1.0.3</span>
         </Link>
 
@@ -55,60 +54,47 @@ export default function Navigation() {
         {/* Desktop navigation */}
         <nav className="hidden md:flex space-x-8">
           {navItems.map((item) => (
-            <Link 
-              key={item.path} 
+            <Link
+              key={item.path}
               href={item.path}
-              className={`text-sm font-mono relative group ${
+              className={`relative group ${
                 pathname === item.path ? 'text-accent' : 'text-foreground'
               }`}
             >
               <span className="absolute -inset-1 bg-accent opacity-0 group-hover:opacity-10 transition-opacity duration-300 rounded"></span>
-              {pathname === item.path ? (
-                <GlitchText text={item.name} tag="span" glitchIntensity={0.4} />
-              ) : (
-                <span>{item.name}</span>
+              <span>{item.name}</span>
+              {pathname === item.path && (
+                <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-accent"></span>
               )}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent group-hover:w-full transition-all duration-300"></span>
             </Link>
           ))}
         </nav>
-      </div>
 
-      {/* Mobile menu */}
-      <div 
-        className={`md:hidden fixed inset-0 bg-black bg-opacity-95 z-50 transition-transform duration-500 ${
-          menuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
-        <div className="container mx-auto px-4 py-4 flex justify-end">
-          <button 
-            onClick={() => setMenuOpen(false)}
-            className="text-foreground"
-            aria-label="Close menu"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-        <div className="flex flex-col items-center justify-center h-full">
-          {navItems.map((item) => (
-            <Link 
-              key={item.path} 
-              href={item.path}
-              className={`text-xl font-mono my-4 relative ${
-                pathname === item.path ? 'text-accent' : 'text-foreground'
-              }`}
-              onClick={() => setMenuOpen(false)}
-            >
-              {pathname === item.path ? (
-                <GlitchText text={item.name} tag="span" glitchIntensity={0.4} />
-              ) : (
-                <span>{item.name}</span>
-              )}
-            </Link>
-          ))}
+        {/* Mobile navigation */}
+        <div 
+          className={`fixed inset-0 bg-black bg-opacity-95 z-50 transition-all duration-300 md:hidden ${
+            menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+        >
+          <div className="flex flex-col items-center justify-center h-full">
+            <nav className="flex flex-col space-y-8 items-center">
+              {navItems.map((item) => (
+                <Link
+                  key={item.path}
+                  href={item.path}
+                  className={`text-2xl relative group ${
+                    pathname === item.path ? 'text-accent' : 'text-foreground'
+                  }`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span>{item.name}</span>
+                  {pathname === item.path && (
+                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-accent"></span>
+                  )}
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
     </header>

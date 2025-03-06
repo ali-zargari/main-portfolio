@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ali Zargari | Systems Engineer",
+  title: "Ali Zargari | Software Engineer",
   description: "The digital core of a machine built to keep chaos at bay, but just barely.",
   keywords: ["systems engineer", "portfolio", "innovation", "technology"],
 };

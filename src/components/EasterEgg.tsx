@@ -72,7 +72,7 @@ export default function EasterEgg() {
       className={`fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4 transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
     >
       <div className="bg-[#111] border border-[#333] p-6 max-w-md w-full cyber-card">
-        <div className="text-[#00FFFF] text-xs mb-2 font-mono">INFO://{activeSecret?.title.toLowerCase().replace(/\s+/g, '_')}</div>
+        <div className="text-[#94A3B8] text-xs mb-2 font-mono">INFO://{activeSecret?.title.toLowerCase().replace(/\s+/g, '_')}</div>
         <h3 className="text-[#9B59B6] text-xl mb-4 font-mono">{activeSecret?.title}</h3>
         <p className="text-[#ccc] font-mono text-sm leading-relaxed">
           {activeSecret?.message}

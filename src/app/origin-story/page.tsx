@@ -7,7 +7,7 @@ import SubliminalMessages from '@/components/SubliminalMessages';
 import EasterEgg from '@/components/EasterEgg';
 import TheCost from '@/components/TheCost';
 
-export default function OriginStory() {
+export default function ProfessionalJourney() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function OriginStory() {
         }`}>
           <div className="mb-12">
             <GlitchText 
-              text="ORIGIN STORY" 
+              text="PROFESSIONAL JOURNEY" 
               tag="h1" 
               className="text-4xl sm:text-5xl font-bold mb-6"
               glitchIntensity={0.3}
@@ -43,26 +43,25 @@ export default function OriginStory() {
               <div className="relative">
                 <div className="absolute -inset-1 border border-[#333] z-0"></div>
                 <div className="relative z-10 bg-[#111] p-6">
-                  <div className="terminal-text text-xs mb-4">SYSTEM://personal_logs/origin.txt</div>
+                  <div className="terminal-text text-xs mb-4">SYSTEM://personal_logs/development_path.txt</div>
                   <div className="space-y-6 text-lg">
                     <p>
-                      I wasn't born into technology. I <span className="text-accent">fought</span> my way into it.
+                      My journey into advanced system development began with a strong foundation in both theoretical principles and hands-on implementation.
                     </p>
                     <p>
-                      When systems fail, people suffer. I learned this early. The difference between 
-                      a functioning system and a broken one isn't academic—it's survival.
+                      Throughout my career, I've focused on building systems that solve real-world problems through innovative technical approaches. 
+                      I've consistently pushed the boundaries of what's possible by integrating cutting-edge technologies into cohesive, functional solutions.
                     </p>
                     <p>
-                      My journey began with necessity, not curiosity. When everything around me was 
-                      unpredictable, I found solace in the predictable nature of well-designed systems.
+                      My technical interests evolved from fundamental programming to specialized work in intelligent systems, 
+                      distributed computing, and the integration of multiple technological domains to create comprehensive solutions.
                     </p>
                     <p>
-                      I've built my career on the edge of chaos, creating order where there was none, 
-                      finding patterns in noise, and building resilience into every line of code.
+                      I've developed projects ranging from sophisticated AI applications to novel approaches in system architecture, 
+                      always with an emphasis on practical implementation and measurable results.
                     </p>
                     <p>
-                      This isn't a story about becoming a systems engineer. This is a story about 
-                      becoming the <span className="font-bold flicker">architect of my own survival</span>.
+                      This portfolio represents years dedicated to <span className="font-bold flicker">building advanced systems that solve complex problems</span> across various domains.
                     </p>
                   </div>
                 </div>
@@ -71,18 +70,18 @@ export default function OriginStory() {
               <div className="relative mt-12">
                 <div className="absolute -inset-1 border border-[#333] z-0"></div>
                 <div className="relative z-10 bg-[#111] p-6">
-                  <div className="terminal-text text-xs mb-4">SYSTEM://philosophy.md</div>
+                  <div className="terminal-text text-xs mb-4">SYSTEM://development_philosophy.md</div>
                   <div className="space-y-6">
-                    <p className="text-xl font-bold text-accent">Core Principles</p>
+                    <p className="text-xl font-bold text-accent">Development Principles</p>
                     <ul className="space-y-4 list-disc pl-5">
-                      <li>Resilience over perfection</li>
-                      <li>Adaptation over prediction</li>
-                      <li>Function over form (though form matters)</li>
-                      <li>Simplicity in complexity</li>
-                      <li>Constant evolution</li>
+                      <li>Elegant solutions to complex problems</li>
+                      <li>Performance optimization at scale</li>
+                      <li>Interdisciplinary approaches to technical challenges</li>
+                      <li>User-centered design in system architecture</li>
+                      <li>Continuous improvement and iteration</li>
                     </ul>
                     <p className="text-sm opacity-70 italic mt-6">
-                      "The most elegant systems are those that survive their creators' mistakes."
+                      "The most valuable systems are those that solve complex problems with elegant simplicity."
                     </p>
                   </div>
                 </div>
@@ -93,32 +92,32 @@ export default function OriginStory() {
               <div className="relative">
                 <div className="absolute -inset-1 border border-[#333] z-0"></div>
                 <div className="relative z-10 bg-[#111] p-6">
-                  <div className="terminal-text text-xs mb-4">SYSTEM://timeline.json</div>
+                  <div className="terminal-text text-xs mb-4">SYSTEM://career_timeline.json</div>
                   <div className="space-y-6">
                     <div className="border-l-2 border-accent pl-4 py-2">
                       <div className="text-accent font-mono text-sm">2010</div>
-                      <div className="font-bold">First System</div>
-                      <div className="text-sm opacity-70">Built a rudimentary monitoring system out of necessity.</div>
+                      <div className="font-bold">Early Development</div>
+                      <div className="text-sm text-white/70">First major projects in systems architecture and algorithm implementation.</div>
                     </div>
                     <div className="border-l-2 border-accent pl-4 py-2">
                       <div className="text-accent font-mono text-sm">2014</div>
-                      <div className="font-bold">Breaking Point</div>
-                      <div className="text-sm opacity-70">When failure wasn't an option, innovation became mandatory.</div>
+                      <div className="font-bold">Technical Advancement</div>
+                      <div className="text-sm text-white/70">Expanded expertise in distributed systems and machine learning applications.</div>
                     </div>
                     <div className="border-l-2 border-accent pl-4 py-2">
                       <div className="text-accent font-mono text-sm">2017</div>
-                      <div className="font-bold">System Architect</div>
-                      <div className="text-sm opacity-70">Transitioned from building components to designing ecosystems.</div>
+                      <div className="font-bold">System Architecture</div>
+                      <div className="text-sm text-white/70">Developed novel approaches to distributed system coordination and implementation.</div>
                     </div>
                     <div className="border-l-2 border-accent pl-4 py-2">
                       <div className="text-accent font-mono text-sm">2020</div>
-                      <div className="font-bold">Olympus Project</div>
-                      <div className="text-sm opacity-70">Created the framework that would define my approach to systems.</div>
+                      <div className="font-bold">AI Integration</div>
+                      <div className="text-sm text-white/70">Focused on integrating artificial intelligence into practical system applications.</div>
                     </div>
                     <div className="border-l-2 border-accent pl-4 py-2">
-                      <div className="text-accent font-mono text-sm">NOW</div>
-                      <div className="font-bold">Continuous Evolution</div>
-                      <div className="text-sm opacity-70">The system never stops improving. Neither do I.</div>
+                      <div className="text-accent font-mono text-sm">2023</div>
+                      <div className="font-bold">Advanced Systems</div>
+                      <div className="text-sm text-white/70">Developing comprehensive solutions that integrate multiple technological domains.</div>
                     </div>
                   </div>
                 </div>
@@ -127,43 +126,18 @@ export default function OriginStory() {
               <div className="relative">
                 <div className="absolute -inset-1 border border-[#333] z-0"></div>
                 <div className="relative z-10 bg-[#111] p-6">
-                  <div className="terminal-text text-xs mb-4">SYSTEM://skills.dat</div>
+                  <div className="terminal-text text-xs mb-4">SYSTEM://technical_expertise.json</div>
                   <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="font-mono">System Architecture</span>
-                        <span className="font-mono text-terminal-green">94%</span>
-                      </div>
-                      <div className="w-full bg-[#222] h-2">
-                        <div className="bg-terminal-green h-full" style={{ width: '94%' }}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="font-mono">Distributed Systems</span>
-                        <span className="font-mono text-system-blue">89%</span>
-                      </div>
-                      <div className="w-full bg-[#222] h-2">
-                        <div className="bg-system-blue h-full" style={{ width: '89%' }}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="font-mono">Resilience Engineering</span>
-                        <span className="font-mono text-accent">97%</span>
-                      </div>
-                      <div className="w-full bg-[#222] h-2">
-                        <div className="bg-accent h-full" style={{ width: '97%' }}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="font-mono">Cloud Infrastructure</span>
-                        <span className="font-mono text-terminal-green">92%</span>
-                      </div>
-                      <div className="w-full bg-[#222] h-2">
-                        <div className="bg-terminal-green h-full" style={{ width: '92%' }}></div>
-                      </div>
+                    <p className="text-xl font-bold text-accent">Technical Domains</p>
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">Distributed Systems</span>
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">Machine Learning</span>
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">Computer Vision</span>
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">IoT Architecture</span>
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">System Design</span>
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">Performance Optimization</span>
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">Fault Tolerance</span>
+                      <span className="px-2 py-1 bg-black text-xs font-mono rounded border border-white/20 text-white/80">Real-time Processing</span>
                     </div>
                   </div>
                 </div>

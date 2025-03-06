@@ -28,7 +28,7 @@ interface ProjectDetail {
   achievements: string[];
 }
 
-export default function QuantumInitiatives() {
+export default function SignificantProjects() {
   const [loaded, setLoaded] = useState(false);
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [scrollY, setScrollY] = useState(0);
@@ -86,15 +86,15 @@ export default function QuantumInitiatives() {
             loaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
           }`}>
             <GlitchText 
-              text="QUANTUM INITIATIVES" 
+              text="SIGNIFICANT TECHNICAL PROJECTS" 
               tag="h1" 
               className="text-4xl sm:text-6xl font-bold mb-6"
               glitchIntensity={0.3}
             />
             <div className="w-20 h-1 bg-[#9B59B6] mx-auto mb-8"></div>
             <p className="text-lg max-w-2xl mx-auto text-white/70">
-              Advanced systems that integrate cutting-edge technologies to solve complex problems.
-              Each project represents a fusion of innovation and practical application.
+              Advanced systems developed to address complex technical challenges through innovative approaches and cutting-edge technologies.
+              Each project represents a substantial development effort with significant technical complexity.
             </p>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function QuantumInitiatives() {
                   <div className={`inline-flex items-center text-xs font-mono transition-all duration-300 ${
                     selectedProject === project.id ? 'opacity-100' : 'opacity-70 group-hover:opacity-100'
                   }`} style={{color: project.color}}>
-                    VIEW DETAILS
+                    EXAMINE DETAILS
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
@@ -186,17 +186,17 @@ export default function QuantumInitiatives() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <div>
                       <div className="mb-8">
-                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>OVERVIEW</h3>
+                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>PROJECT OVERVIEW</h3>
                         <p className="text-white/80 leading-relaxed">{details.fullDescription}</p>
                       </div>
                       
                       <div className="mb-8">
-                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>CHALLENGES</h3>
+                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>TECHNICAL CHALLENGES</h3>
                         <p className="text-white/80 leading-relaxed">{details.challenges}</p>
                       </div>
                       
                       <div>
-                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>ACHIEVEMENTS</h3>
+                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>KEY ACHIEVEMENTS</h3>
                         <ul className="space-y-3">
                           {details.achievements.map((achievement: string, index: number) => (
                             <li key={index} className="flex items-start">
@@ -210,7 +210,7 @@ export default function QuantumInitiatives() {
                     
                     <div>
                       <div className="mb-8">
-                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>TECHNOLOGIES</h3>
+                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>TECHNOLOGY STACK</h3>
                         <div className="flex flex-wrap gap-3">
                           {details.technologies.map((tech: string, index: number) => (
                             <span 
@@ -224,16 +224,16 @@ export default function QuantumInitiatives() {
                       </div>
                       
                       <div className="bg-black/70 border border-white/10 p-6 rounded-lg">
-                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>INTERESTED?</h3>
+                        <h3 className="text-lg font-mono mb-4" style={{color: project.color}}>PROJECT INQUIRY</h3>
                         <p className="text-white/80 mb-6">
-                          Want to learn more about this project or discuss how similar solutions could benefit your organization?
+                          Interested in discussing the technical details, implementation approach, or potential applications of this project?
                         </p>
                         <Link 
                           href={`/contact?project=${project.id}`}
                           className="inline-block px-6 py-3 font-mono transition-all duration-300 text-black"
                           style={{backgroundColor: project.color}}
                         >
-                          REQUEST INFORMATION
+                          REQUEST DETAILS
                         </Link>
                       </div>
                     </div>
