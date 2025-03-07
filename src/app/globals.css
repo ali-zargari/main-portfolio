@@ -435,5 +435,60 @@ html {
 }
 
 .animate-pulse-once {
-  animation: pulse-once 1s;
+  animation: pulse-once 2s ease-in-out forwards;
+}
+
+/* Custom scrollbar for project description */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(155, 89, 182, 0.3);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 89, 182, 0.5);
+}
+
+/* Border flow animation for project cards */
+@keyframes border-flow {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+.animate-border-flow::before {
+  background-size: 200% 200%;
+  animation: border-flow 4s linear infinite;
+}
+
+/* Card hover effect */
+@keyframes subtle-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.group:hover .group-hover\:animate-float {
+  animation: subtle-float 4s ease-in-out infinite;
 }

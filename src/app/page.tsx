@@ -294,164 +294,152 @@ function GitHubContributions() {
 function ProjectCard({ project, isExpanded, onToggleExpand }: { project: any, isExpanded: boolean, onToggleExpand: () => void }) {
   return (
     <div 
-      className={`w-72 flex-shrink-0 relative rounded-xl overflow-hidden transition-all duration-500 group shadow-xl hover:shadow-[#94A3B8]/20 ${isExpanded ? 'z-20' : 'z-10'}`}
+      className="w-80 flex-shrink-0 relative rounded-xl overflow-hidden"
       style={{
-        transform: isExpanded ? 'translateY(-8px)' : 'translateY(0)',
-        boxShadow: isExpanded ? '0 10px 25px -5px rgba(0, 0, 0, 0.3)' : '',
-        height: isExpanded ? 'auto' : '460px', // Fixed height for non-expanded cards
-        display: 'flex',
-        flexDirection: 'column',
-        alignSelf: 'flex-start'  // Ensure cards don't stretch to match others
+        height: isExpanded ? 'auto' : '520px',
+        minHeight: isExpanded ? '650px' : '520px',
+        maxHeight: isExpanded ? '1000px' : '520px',
+        transition: 'min-height 0.5s ease-in-out, max-height 0.5s ease-in-out'
       }}
     >
-      {/* Solid background */}
-      <div className="absolute inset-0 bg-[#111] backdrop-blur-sm"></div>
+      {/* Translucent background */}
+      <div className="absolute inset-0 bg-[#111]/80 backdrop-blur-sm z-0"></div>
+      <div className="absolute inset-0 rounded-xl border border-white/10 z-0"></div>
       
-      {/* Border with project color */}
-      <div 
-        className="absolute inset-0 rounded-xl border border-white/10 group-hover:border-opacity-30 transition-colors duration-300 pointer-events-none" 
-        style={{ borderColor: project.bgColor }}
-      ></div>
-      
-      {/* Project image */}
-      <div 
-        className="block relative h-48 overflow-hidden rounded-t-xl cursor-pointer"
-        onClick={onToggleExpand}
-      >
-        {/* Solid overlay instead of gradient */}
-        <div className="absolute inset-0 bg-black/50 z-10 transition-all duration-500"></div>
-        
-        {project.image ? (
-          <div className="relative h-full w-full transform group-hover:scale-105 transition-transform duration-500">
-            <Image 
-              src={project.image} 
-              alt={project.title} 
-              fill 
-              className="object-cover"
-            />
+      {/* Content container */}
+      <div className="relative z-10 flex flex-col h-full" style={{ textShadow: 'none' }}>
+        {/* HEADER - Fixed height */}
+        <div className="h-[70px] p-4 flex justify-between items-start">
+          <h3 className="text-xl font-bold text-white hover:text-[#94A3B8] line-clamp-2 w-[70%]" style={{ textShadow: 'none' }}>
+            {project.title}
+          </h3>
+          
+          <div className="flex-shrink-0">
+            <span className="text-sm font-mono text-white/80 bg-black/50 px-2.5 py-1 rounded-full border border-white/10" style={{ textShadow: 'none' }}>
+              {project.year}
+            </span>
           </div>
-        ) : (
-          <div 
-            className="relative h-full w-full transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center"
-            style={{ background: project.gradient }}
-          >
+        </div>
+        
+        {/* BODY */}
+        <div className="px-6 py-1 flex flex-col flex-grow overflow-hidden">
+          {/* Project logo/badge */}
+          <div className="flex justify-center items-center mb-3">
             <div 
-              className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold"
-              style={{ backgroundColor: project.bgColor, color: '#fff' }}
+              className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold hover:scale-105"
+              style={{ 
+                backgroundColor: project.bgColor || '#6b7280', 
+                color: '#fff', 
+                textShadow: 'none',
+                transition: 'transform 0.3s ease'
+              }}
             >
               {project.initials}
             </div>
           </div>
-        )}
-        
-        {/* Project link button */}
-        <a 
-          href={project.link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute top-3 left-3 z-20 bg-black/70 hover:bg-black text-white/80 hover:text-white text-xs px-2 py-1 rounded-full border border-white/10 hover:border-white/30 transition-all duration-300 flex items-center gap-1"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          <span>GitHub</span>
-        </a>
-        
-        <div className="absolute top-3 right-3 z-20">
-          <span className="text-xs font-mono text-white/80 bg-black px-2 py-1 rounded-full border border-white/10">{project.year}</span>
-        </div>
-        
-        {/* Move title to top of image instead of bottom */}
-        <div className="absolute top-0 left-0 p-4 z-20 w-full bg-gradient-to-b from-black/80 to-transparent">
-          <h3 className="text-lg font-bold text-white group-hover:text-[#94A3B8] transition-colors duration-300">{project.title}</h3>
-        </div>
-      </div>
-      
-      {/* Project details */}
-      <div className="p-5 relative z-10 transition-all duration-500 flex-grow flex flex-col justify-between">
-        <div>
-          <div className="inline-block px-3 py-1 bg-black border border-white/10 rounded-full text-xs font-mono text-white/70 mb-3 self-start">
-            {project.milestone}
-          </div>
           
-          {/* Description with expand/collapse functionality */}
-          <div className="relative mb-4">
-            <p className={`text-sm text-white/80 leading-relaxed transition-all duration-500 overflow-hidden
-              ${isExpanded ? '' : 'line-clamp-3'}`}
-              style={{ 
-                height: isExpanded ? 'auto' : undefined,
-                position: isExpanded ? 'relative' : undefined,
-                minHeight: !isExpanded ? '4.5rem' : undefined, // Ensure consistent height for 3 lines
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: isExpanded ? 'unset' : 3
-              }}>
-              {project.description}
-            </p>
+          {/* Badges row */}
+          <div className="flex items-center gap-2 h-[30px] mb-3 overflow-x-auto hide-scrollbar">
+            <div 
+              className="px-3 py-1 bg-black/70 rounded-full text-xs font-mono text-white/80 border border-white/10 flex items-center h-6 flex-shrink-0" 
+              style={{ textShadow: 'none' }}
+            >
+              <span className="opacity-70 mr-1" style={{ textShadow: 'none' }}>Complexity:</span>
+              <span style={{ textShadow: 'none' }}>{project.milestone}</span>
+            </div>
             
-            {/* Gradient overlay for collapsed state */}
-            {!isExpanded && (
-              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#111] to-transparent"></div>
+            {project.link && (
+              <a 
+                href={project.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1 bg-black/70 rounded-full text-xs font-mono text-white/80 border border-white/10 hover:bg-black hover:text-white transition-all duration-300 flex items-center h-6 flex-shrink-0"
+                onClick={(e) => e.stopPropagation()}
+                style={{ textShadow: 'none' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                </svg>
+                <span style={{ textShadow: 'none' }}>Repository</span>
+              </a>
             )}
           </div>
+          
+          {/* Description with overflow hidden */}
+          <div className="mb-4 transition-all duration-500 ease-in-out">
+            <div className={`transition-all duration-500 ease-in-out ${isExpanded ? '' : 'overflow-hidden'}`} style={{ 
+              maxHeight: isExpanded ? '1000px' : '140px',
+              transition: 'max-height 0.5s ease-in-out'
+            }}>
+              <p className="text-sm text-white/80 leading-relaxed" style={{ textShadow: 'none' }}>
+                {project.description}
+              </p>
+            </div>
+          </div>
+          
+          {/* Technologies with limited display */}
+          <div className="mb-4 transition-all duration-500 ease-in-out">
+            <h4 className="text-xs font-mono text-white/60 mb-2 uppercase tracking-wider" style={{ textShadow: 'none' }}>
+              Technologies
+            </h4>
+            <div className={`flex flex-wrap gap-2 transition-all duration-500 ease-in-out ${isExpanded ? '' : 'overflow-hidden'}`} style={{
+              maxHeight: isExpanded ? '1000px' : '120px',
+              transition: 'max-height 0.5s ease-in-out'
+            }}>
+              {project.technologies && project.technologies.length > 0 ? (
+                <>
+                  {/* Show all techs when expanded, or just first 4 when collapsed */}
+                  {(isExpanded ? project.technologies : project.technologies.slice(0, 4)).map((tech: string, techIndex: number) => (
+                    <span 
+                      key={techIndex} 
+                      className="px-2.5 py-1 bg-black/50 text-xs font-mono rounded-full border border-white/10 text-white/80 mb-1"
+                      style={{ textShadow: 'none' }}
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                  
+                  {/* Show "+X more" badge when collapsed and there are more than 4 techs */}
+                  {!isExpanded && project.technologies.length > 4 && (
+                    <span className="px-2.5 py-1 bg-black/40 text-xs font-mono rounded-full border border-white/5 text-white/70 mb-1"
+                      style={{ textShadow: 'none' }}
+                    >
+                      +{project.technologies.length - 4} more
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span className="px-2.5 py-1 bg-black/50 text-xs font-mono rounded-full border border-white/10 text-white/80" style={{ textShadow: 'none' }}>
+                  No technologies listed
+                </span>
+              )}
+            </div>
+          </div>
         </div>
         
-        <div>
-          {/* Technologies */}
-          <div className={`flex flex-wrap gap-2 pt-2 mb-4 ${isExpanded ? '' : 'overflow-hidden'}`} 
-               style={{ minHeight: isExpanded ? 'auto' : '40px' }}>
-            {project.technologies && project.technologies.length > 0 ? (
+        {/* FOOTER with button */}
+        <div className="h-[50px] px-6 flex items-center justify-center mt-auto">
+          <button 
+            onClick={onToggleExpand}
+            className="px-4 py-1 bg-black/60 text-white/80 hover:text-white text-xs font-mono rounded-full border border-white/10 hover:border-white/20 flex items-center"
+            style={{ textShadow: 'none' }}
+          >
+            {isExpanded ? (
               <>
-                {/* When expanded, show all technologies; when collapsed, show only first 4 */}
-                {(isExpanded ? project.technologies : project.technologies.slice(0, 4)).map((tech: string, techIndex: number) => (
-                  <span 
-                    key={techIndex} 
-                    className="px-2 py-1 mb-1 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80 inline-block"
-                  >
-                    {tech}
-                  </span>
-                ))}
-                {/* Only show "+X more" when not expanded and there are more than 4 technologies */}
-                {!isExpanded && project.technologies.length > 4 && (
-                  <span className="px-2 py-1 mb-1 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80 inline-block">
-                    +{project.technologies.length - 4} more
-                  </span>
-                )}
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+                <span style={{ textShadow: 'none' }}>Collapse</span>
               </>
             ) : (
-              <span className="px-2 py-1 mb-1 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80 inline-block">
-                No technologies listed
-              </span>
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+                <span style={{ textShadow: 'none' }}>Expand</span>
+              </>
             )}
-          </div>
-          
-          {/* Action buttons */}
-          <div className="flex justify-center items-center">
-            <button 
-              onClick={onToggleExpand}
-              className={`inline-flex items-center px-3 py-1 bg-black border border-white/10 text-white/70 text-xs font-mono hover:bg-black transition-all duration-300 rounded-full
-                ${isExpanded ? 'animate-pulse-once' : ''}`}
-            >
-              {isExpanded ? 'Collapse' : 'Expand'}
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                width="12" 
-                height="12" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                className={`ml-1 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-              >
-                <polyline points="6 9 12 15 18 9"></polyline>
-              </svg>
-            </button>
-          </div>
+          </button>
         </div>
       </div>
     </div>
@@ -610,7 +598,7 @@ export default function Home() {
     };
   });
 
-  // Development Journey Timeline - Horizontal
+  // Development Journey Timeline - Elegant Redesign
   const [activeYear, setActiveYear] = useState('2021');
   
   // Scroll to projects from a specific year
@@ -847,8 +835,8 @@ export default function Home() {
       </section>
 
       {/* Development Journey Timeline - Elegant Redesign */}
-      <section className="py-20 bg-black/30 relative z-10">
-        <div className="container mx-auto px-4">
+      <section className="py-20 bg-black/30 relative z-10 overflow-hidden" style={{ textShadow: 'none' }}>
+        <div className="container mx-auto px-4 relative z-10">
           <div className="mb-12 text-center">
             <h2 className="text-3xl font-bold mb-6">ADDITIONAL PROJECTS</h2>
             <div className="w-20 h-1 bg-[#9B59B6] mx-auto mb-8"></div>
@@ -859,7 +847,7 @@ export default function Home() {
 
           {/* Simple horizontal scrolling container with navigation buttons */}
           <div className="relative flex items-center mx-auto max-w-full px-4 md:px-8 lg:px-12">
-            {/* Left scroll button */}
+            {/* Left scroll button - restore original style */}
             <button 
               onClick={() => scrollTimeline('left')}
               className="z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-colors duration-300 mr-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0"
@@ -875,25 +863,175 @@ export default function Home() {
               ref={timelineRef}
               className="overflow-x-auto pb-8 hide-scrollbar flex-grow mx-2"
             >
-              {/* Use the expandedCardIndices state from the parent component */}
-              <div className="flex space-x-8 min-w-max px-8 py-4 items-start">
+              {/* Visual scroll indicator - keep this improvement */}
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
+                <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#94A3B8] to-[#94A3B8]/30 opacity-70"></div>
+              </div>
+              
+              {/* Projects container */}
+              <div className="flex space-x-8 min-w-max px-8 py-4 items-stretch">
                 {smallerProjects.map((project, index) => {
                   // Check if this specific card is expanded
                   const isExpanded = isCardExpanded(index);
                   
                   return (
-                    <ProjectCard 
-                      key={index} 
-                      project={project} 
-                      isExpanded={isExpanded} 
-                      onToggleExpand={() => toggleCardExpansion(index)} 
-                    />
+                    <div 
+                      key={index}
+                      className="w-80 flex-shrink-0 relative rounded-xl overflow-hidden"
+                      style={{
+                        height: isExpanded ? 'auto' : '520px',
+                        minHeight: isExpanded ? '650px' : '520px',
+                        maxHeight: isExpanded ? '1000px' : '520px',
+                        transition: 'min-height 0.5s ease-in-out, max-height 0.5s ease-in-out'
+                      }}
+                    >
+                      {/* Translucent background */}
+                      <div className="absolute inset-0 bg-[#111]/80 backdrop-blur-sm z-0"></div>
+                      <div className="absolute inset-0 rounded-xl border border-white/10 z-0"></div>
+                      
+                      {/* Content container */}
+                      <div className="relative z-10 flex flex-col h-full" style={{ textShadow: 'none' }}>
+                        {/* HEADER - Fixed height */}
+                        <div className="h-[70px] p-4 flex justify-between items-start">
+                          <h3 className="text-xl font-bold text-white hover:text-[#94A3B8] line-clamp-2 w-[70%]" style={{ textShadow: 'none' }}>
+                            {project.title}
+                          </h3>
+                          
+                          <div className="flex-shrink-0">
+                            <span className="text-sm font-mono text-white/80 bg-black/50 px-2.5 py-1 rounded-full border border-white/10" style={{ textShadow: 'none' }}>
+                              {project.year}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        {/* BODY */}
+                        <div className="px-6 py-1 flex flex-col flex-grow overflow-hidden">
+                          {/* Project logo/badge */}
+                          <div className="flex justify-center items-center mb-3">
+                            <div 
+                              className="w-20 h-20 rounded-full flex items-center justify-center text-3xl font-bold hover:scale-105"
+                              style={{ 
+                                backgroundColor: project.bgColor || '#6b7280', 
+                                color: '#fff', 
+                                textShadow: 'none',
+                                transition: 'transform 0.3s ease'
+                              }}
+                            >
+                              {project.initials}
+                            </div>
+                          </div>
+                          
+                          {/* Badges row */}
+                          <div className="flex items-center gap-2 h-[30px] mb-3 overflow-x-auto hide-scrollbar">
+                            <div 
+                              className="px-3 py-1 bg-black/70 rounded-full text-xs font-mono text-white/80 border border-white/10 flex items-center h-6 flex-shrink-0" 
+                              style={{ textShadow: 'none' }}
+                            >
+                              <span className="opacity-70 mr-1" style={{ textShadow: 'none' }}>Complexity:</span>
+                              <span style={{ textShadow: 'none' }}>{project.milestone}</span>
+                            </div>
+                            
+                            {project.link && (
+                              <a 
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1 bg-black/70 rounded-full text-xs font-mono text-white/80 border border-white/10 hover:bg-black hover:text-white transition-all duration-300 flex items-center h-6 flex-shrink-0"
+                                onClick={(e) => e.stopPropagation()}
+                                style={{ textShadow: 'none' }}
+                              >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                                </svg>
+                                <span style={{ textShadow: 'none' }}>Repository</span>
+                              </a>
+                            )}
+                          </div>
+                          
+                          {/* Description with overflow hidden */}
+                          <div className="mb-4 transition-all duration-500 ease-in-out">
+                            <div className={`transition-all duration-500 ease-in-out ${isExpanded ? '' : 'overflow-hidden'}`} style={{ 
+                              maxHeight: isExpanded ? '1000px' : '140px',
+                              transition: 'max-height 0.5s ease-in-out'
+                            }}>
+                              <p className="text-sm text-white/80 leading-relaxed" style={{ textShadow: 'none' }}>
+                                {project.description}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          {/* Technologies with limited display */}
+                          <div className="mb-4 transition-all duration-500 ease-in-out">
+                            <h4 className="text-xs font-mono text-white/60 mb-2 uppercase tracking-wider" style={{ textShadow: 'none' }}>
+                              Technologies
+                            </h4>
+                            <div className={`flex flex-wrap gap-2 transition-all duration-500 ease-in-out ${isExpanded ? '' : 'overflow-hidden'}`} style={{
+                              maxHeight: isExpanded ? '1000px' : '120px',
+                              transition: 'max-height 0.5s ease-in-out'
+                            }}>
+                              {project.technologies && project.technologies.length > 0 ? (
+                                <>
+                                  {/* Show all techs when expanded, or just first 4 when collapsed */}
+                                  {(isExpanded ? project.technologies : project.technologies.slice(0, 4)).map((tech: string, techIndex: number) => (
+                                    <span 
+                                      key={techIndex} 
+                                      className="px-2.5 py-1 bg-black/50 text-xs font-mono rounded-full border border-white/10 text-white/80 mb-1"
+                                      style={{ textShadow: 'none' }}
+                                    >
+                                      {tech}
+                                    </span>
+                                  ))}
+                                  
+                                  {/* Show "+X more" badge when collapsed and there are more than 4 techs */}
+                                  {!isExpanded && project.technologies.length > 4 && (
+                                    <span className="px-2.5 py-1 bg-black/40 text-xs font-mono rounded-full border border-white/5 text-white/70 mb-1"
+                                      style={{ textShadow: 'none' }}
+                                    >
+                                      +{project.technologies.length - 4} more
+                                    </span>
+                                  )}
+                                </>
+                              ) : (
+                                <span className="px-2.5 py-1 bg-black/50 text-xs font-mono rounded-full border border-white/10 text-white/80" style={{ textShadow: 'none' }}>
+                                  No technologies listed
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* FOOTER with button */}
+                        <div className="h-[50px] px-6 flex items-center justify-center mt-auto">
+                          <button 
+                            onClick={() => toggleCardExpansion(index)}
+                            className="px-4 py-1 bg-black/60 text-white/80 hover:text-white text-xs font-mono rounded-full border border-white/10 hover:border-white/20 flex items-center"
+                            style={{ textShadow: 'none' }}
+                          >
+                            {isExpanded ? (
+                              <>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                                  <polyline points="18 15 12 9 6 15"></polyline>
+                                </svg>
+                                <span style={{ textShadow: 'none' }}>Collapse</span>
+                              </>
+                            ) : (
+                              <>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                                  <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span style={{ textShadow: 'none' }}>Expand</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
             </div>
             
-            {/* Right scroll button */}
+            {/* Right scroll button - restore original style */}
             <button 
               onClick={() => scrollTimeline('right')}
               className="z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-colors duration-300 ml-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0"
@@ -905,7 +1043,7 @@ export default function Home() {
             </button>
           </div>
           
-          {/* Journey narrative */}
+          {/* Journey narrative - keeping the improved journey section but with original styling */}
           <div className="max-w-3xl mx-auto mt-16 bg-black/30 backdrop-blur-sm p-6 border border-white/10 rounded-lg">
             <p className="text-white/80 leading-relaxed mb-4">
               My development journey began with simple frontend projects as I learned the fundamentals of web development. 
