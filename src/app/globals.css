@@ -492,3 +492,36 @@ html {
 .group:hover .group-hover\:animate-float {
   animation: subtle-float 4s ease-in-out infinite;
 }
+
+@keyframes dot-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(155, 89, 182, 0.4);
+  }
+  70% {
+    transform: scale(1.3);
+    box-shadow: 0 0 0 10px rgba(155, 89, 182, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(155, 89, 182, 0);
+  }
+}
+
+.animate-dot-pulse {
+  animation: dot-pulse 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes progress-shine {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-progress-shine {
+  animation: progress-shine 2s infinite linear;
+  background-size: 200% 100%;
+}

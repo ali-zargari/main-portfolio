@@ -516,9 +516,23 @@ export default function Home() {
     transitionDelay: '0.9s'
   };
 
+  const [currentPage, setCurrentPage] = useState(0);
+  // Add state for cards per page
+  const [cardsPerPage, setCardsPerPage] = useState(4);
+  // Add state for animation
+  const [isAnimating, setIsAnimating] = useState(false);
+  // Add state to track which dot was clicked for animation
+  const [clickedDot, setClickedDot] = useState<number | null>(null);
+  
+  // Force re-render on scroll to update progress bar
+  const [scrollPosition, setScrollPosition] = useState(0);
+  
   useEffect(() => {
     setIsClient(true);
-    setLoaded(true);
+    
+    setTimeout(() => {
+      setLoaded(true);
+    }, 300);
 
     // Generate particles once on client-side only
     const newParticles = Array.from({ length: 8 }, () => ({
@@ -675,18 +689,35 @@ export default function Home() {
   
   // Scroll the timeline to the left or right
   const scrollTimeline = (direction: 'left' | 'right') => {
-    if (!timelineRef.current) return;
+    if (!timelineRef.current || isAnimating) return;
     
+    setIsAnimating(true);
     const container = timelineRef.current;
-    const scrollAmount = 320; // Adjust to match card width + gap
+    const cardWidth = 320; // Width of a card + margin
     
     // Get the current scroll position
     const currentScrollLeft = container.scrollLeft;
     
-    // Calculate the new scroll position
+    // Calculate the new scroll position - scroll by just one card at a time
     const newScrollLeft = direction === 'left' 
-      ? Math.max(0, currentScrollLeft - scrollAmount)
-      : Math.min(container.scrollWidth - container.clientWidth, currentScrollLeft + scrollAmount);
+      ? Math.max(0, currentScrollLeft - cardWidth)
+      : Math.min(container.scrollWidth - container.clientWidth, currentScrollLeft + cardWidth);
+    
+    // Calculate the total number of pages
+    const visibleWidth = container.clientWidth;
+    const cardsPerPage = Math.floor(visibleWidth / cardWidth);
+    const totalPages = Math.ceil(smallerProjects.length / cardsPerPage);
+    
+    // Determine new page based on direction
+    let newPage = currentPage;
+    if (direction === 'left') {
+      newPage = Math.max(0, currentPage - 1);
+    } else {
+      newPage = Math.min(totalPages - 1, currentPage + 1);
+    }
+    
+    // Set the current page - this will update the progress bar
+    setCurrentPage(newPage);
     
     // Smoothly scroll to the new position
     container.scrollTo({
@@ -694,26 +725,138 @@ export default function Home() {
       behavior: 'smooth'
     });
     
-    // Animate the position of the scroll indicator
+    // Update scroll state after animation
     setTimeout(() => {
-      const indicator = container.querySelector('.scroll-indicator');
-      if (indicator && indicator instanceof HTMLElement) {
-        // Calculate the position based on scroll progress
-        const scrollPercent = newScrollLeft / (container.scrollWidth - container.clientWidth);
-        const maxLeft = container.clientWidth - 40; // 40 is indicator width
-        const newLeft = Math.max(0, Math.min(maxLeft * scrollPercent, maxLeft));
-        
-        // Apply transition to the indicator
-        indicator.style.transition = 'left 0.5s ease-out';
-        indicator.style.left = `${newLeft}px`;
-        
-        // Update scroll state after animation
-        const isAtStart = newScrollLeft <= 10;
-        const isAtEnd = Math.abs((container.scrollWidth - container.clientWidth) - newScrollLeft) <= 10;
-        setScrollState({ isAtStart, isAtEnd });
-      }
-    }, 50); // Small delay to sync with scroll animation
+      const isAtStart = container.scrollLeft <= 10;
+      const isAtEnd = Math.abs((container.scrollWidth - container.clientWidth) - container.scrollLeft) <= 10;
+      setScrollState({ isAtStart, isAtEnd });
+      setIsAnimating(false);
+    }, 500);
   };
+  
+  // Function to handle direct page navigation using dots
+  const goToPage = (pageIndex: number) => {
+    if (!timelineRef.current || isAnimating) return;
+    
+    setIsAnimating(true);
+    setClickedDot(pageIndex);
+    
+    const container = timelineRef.current;
+    const cardWidth = 320; // Width of a card + margin
+    const visibleWidth = container.clientWidth;
+    const cardsPerPage = Math.floor(visibleWidth / cardWidth);
+    
+    // Calculate the new scroll position
+    const newScrollLeft = pageIndex * cardsPerPage * cardWidth;
+    
+    // Smoothly scroll to the new position
+    container.scrollTo({
+      left: newScrollLeft,
+      behavior: 'smooth'
+    });
+    
+    // Update current page
+    setCurrentPage(pageIndex);
+    
+    // Update scroll state after animation
+    setTimeout(() => {
+      const isAtStart = container.scrollLeft <= 10;
+      const isAtEnd = Math.abs((container.scrollWidth - container.clientWidth) - container.scrollLeft) <= 10;
+      setScrollState({ isAtStart, isAtEnd });
+      setIsAnimating(false);
+      
+      // Clear clicked dot after animation completes
+      setTimeout(() => {
+        setClickedDot(null);
+      }, 300);
+    }, 500);
+  };
+
+  // Update pagination dots when the container is scrolled
+  useEffect(() => {
+    const container = timelineRef.current;
+    if (!container) return;
+    
+    const handleContainerScroll = () => {
+      if (isAnimating) return;
+      
+      const scrollLeft = container.scrollLeft;
+      const cardWidth = 320; // Width of a card + margin
+      const visibleWidth = container.clientWidth;
+      const cardsPerPage = Math.floor(visibleWidth / cardWidth);
+      
+      // Calculate current page based on scroll position
+      const newPage = Math.round(scrollLeft / (cardsPerPage * cardWidth));
+      
+      // Only update if the page has changed
+      if (newPage !== currentPage) {
+        setCurrentPage(newPage);
+      }
+      
+      // Update scroll state
+      const isAtStart = scrollLeft <= 10;
+      const isAtEnd = Math.abs((container.scrollWidth - container.clientWidth) - scrollLeft) <= 10;
+      setScrollState({ isAtStart, isAtEnd });
+    };
+    
+    container.addEventListener('scroll', handleContainerScroll);
+    return () => container.removeEventListener('scroll', handleContainerScroll);
+  }, [timelineRef, currentPage, isAnimating]);
+
+  // Function to determine how many cards to show per page based on screen width
+  const getCardsPerPage = () => {
+    // Show fewer cards on smaller screens, but at least 2 on all screens
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 640) return 2; // Mobile - show at least 2
+      if (window.innerWidth < 1024) return 3; // Tablet
+      return 4; // Desktop
+    }
+    return 3; // Default for SSR
+  };
+
+  // Set up resize handler to update cardsPerPage
+  const handleResize = () => {
+    // Always set to 4 cards per page
+    setCardsPerPage(4);
+    
+    // If the current page would be out of bounds after resize, adjust it
+    const maxPages = Math.ceil(smallerProjects.length / 4) - 1;
+    if (currentPage > maxPages) {
+      setCurrentPage(maxPages);
+    }
+    
+    // Update scroll position for the new cards per page
+    if (timelineRef.current) {
+      const cardWidth = 320; // Card width + gap
+      timelineRef.current.scrollTo({
+        left: currentPage * cardWidth * 4,
+        behavior: 'auto'
+      });
+    }
+    
+    // Update scroll state
+    setScrollState({
+      isAtStart: currentPage === 0,
+      isAtEnd: currentPage >= Math.ceil(smallerProjects.length / 4) - 1
+    });
+  };
+
+  // Update on scroll
+  useEffect(() => {
+    const container = timelineRef.current;
+    if (!container) return;
+    
+    const handleScroll = () => {
+      setScrollPosition(container.scrollLeft);
+      setScrollState({
+        isAtStart: container.scrollLeft <= 10,
+        isAtEnd: container.scrollLeft >= container.scrollWidth - container.clientWidth - 10
+      });
+    };
+    
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [timelineRef]);
 
   return (
     <main className="min-h-screen bg-black text-white relative overflow-hidden">
@@ -928,33 +1071,71 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Simple horizontal scrolling container with navigation buttons */}
-          <div className="relative flex items-center mx-auto max-w-full px-4 md:px-8 lg:px-12">
-            {/* Left scroll button - only show when not at start */}
-            {!scrollState.isAtStart && (
-            <button 
-              onClick={() => scrollTimeline('left')}
-              className="z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-colors duration-300 mr-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0"
-              aria-label="Scroll left"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-            )}
+          {/* Simple horizontal scrolling container with navigation */}
+          <div className="relative mx-auto max-w-full px-4 md:px-8 lg:px-12">
+            {/* Navigation bar at the top */}
+            <div className="flex items-center justify-center mb-8 relative">
+              {/* Left scroll button */}
+              <button 
+                onClick={() => scrollTimeline('left')}
+                className={`z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all duration-300 mr-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0 absolute left-0 ${
+                  scrollState.isAtStart ? 'opacity-0 pointer-events-none transform -translate-x-4' : 'opacity-100 transform translate-x-0'
+                }`}
+                aria-label="Previous project"
+                disabled={scrollState.isAtStart || isAnimating}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
               
-            {/* Scrollable container */}
-            <div 
-              ref={timelineRef}
-              className="overflow-x-auto pb-8 hide-scrollbar flex-grow mx-2"
-            >
-              {/* Visual scroll indicator - keep this improvement */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
-                <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#94A3B8] to-[#94A3B8]/30 opacity-70 scroll-indicator" style={{ transition: 'left 0.5s ease-out' }}></div>
+              {/* Progress bar - simple implementation */}
+              <div className="flex items-center justify-center py-2 px-6 bg-black/30 backdrop-blur-sm rounded-full border border-white/10">
+                <div className="relative w-60 h-2 bg-white/10 rounded-full overflow-hidden">
+                  <div 
+                    className="absolute inset-y-0 left-0 h-full rounded-full bg-gradient-to-r from-[#9B59B6] to-[#94A3B8]"
+                    style={{ 
+                      width: scrollState.isAtStart ? '0%' : 
+                             scrollState.isAtEnd ? '100%' : 
+                             `${timelineRef.current ? 
+                                (scrollPosition / 
+                                 (timelineRef.current.scrollWidth - timelineRef.current.clientWidth)) * 100 : 0}%`,
+                      opacity: 0.9,
+                      boxShadow: '0 0 10px 2px rgba(155, 89, 182, 0.3), 0 0 15px 4px rgba(155, 89, 182, 0.1)',
+                      transition: 'width 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)'
+                    }}
+                  >
+                    {/* Inner animated element for additional movement */}
+                    <div 
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-progress-shine"
+                      aria-hidden="true"
+                    />
+                  </div>
+                </div>
               </div>
               
-              {/* Projects container */}
-              <div className="flex space-x-8 min-w-max px-8 py-4 items-stretch">
+              {/* Right scroll button */}
+              <button 
+                onClick={() => scrollTimeline('right')}
+                className={`z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all duration-300 ml-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0 absolute right-0 ${
+                  scrollState.isAtEnd ? 'opacity-0 pointer-events-none transform translate-x-4' : 'opacity-100 transform translate-x-0'
+                }`}
+                aria-label="Next project"
+                disabled={scrollState.isAtEnd || isAnimating}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            </div>
+              
+            {/* Scrollable container - fix to allow multiple cards to show */}
+            <div 
+              ref={timelineRef}
+              className="overflow-x-auto pb-8 hide-scrollbar mx-2"
+            >
+              {/* Projects container - fix width to allow multiple cards to be visible */}
+              <div className="flex space-x-6 px-4 py-4 items-stretch">
                 {smallerProjects.map((project, index) => {
                   // Check if this specific card is expanded
                   const isExpanded = isCardExpanded(index);
@@ -1126,19 +1307,6 @@ export default function Home() {
                 })}
               </div>
             </div>
-            
-            {/* Right scroll button - only show when not at end */}
-            {!scrollState.isAtEnd && (
-            <button 
-              onClick={() => scrollTimeline('right')}
-              className="z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-colors duration-300 ml-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0"
-              aria-label="Scroll right"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </button>
-            )}
           </div>
           
           {/* Journey narrative - keeping the improved journey section but with original styling */}
