@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import Navigation from '@/components/Navigation';
@@ -527,6 +527,55 @@ export default function Home() {
   // Force re-render on scroll to update progress bar
   const [scrollPosition, setScrollPosition] = useState(0);
   
+  // Throttle function to limit frequent updates
+  const throttle = useCallback(<T extends (...args: any[]) => any>(func: T, delay: number) => {
+    let lastCall = 0;
+    return function(...args: Parameters<T>) {
+      const now = Date.now();
+      if (now - lastCall < delay) {
+        return;
+      }
+      lastCall = now;
+      return func(...args);
+    };
+  }, []);
+  
+  // Update on scroll with throttling
+  useEffect(() => {
+    const container = timelineRef.current;
+    if (!container) return;
+    
+    // Create throttled handler to limit updates
+    const handleScrollThrottled = throttle((scrollLeft: number) => {
+      // Using RAF to align with the browser's rendering cycle
+      requestAnimationFrame(() => {
+        setScrollPosition(scrollLeft);
+        setScrollState({
+          isAtStart: scrollLeft <= 10,
+          isAtEnd: scrollLeft >= container.scrollWidth - container.clientWidth - 10
+        });
+      });
+    }, 16); // ~60fps
+    
+    const handleScroll = () => {
+      handleScrollThrottled(container.scrollLeft);
+    };
+    
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [timelineRef, throttle]);
+
+  // Memoize expensive computations
+  const progressBarWidth = useMemo(() => {
+    if (!timelineRef.current) return '0%';
+    
+    if (scrollState.isAtStart) return '0%';
+    if (scrollState.isAtEnd) return '100%';
+    
+    return `${(scrollPosition / 
+             (timelineRef.current.scrollWidth - timelineRef.current.clientWidth)) * 100}%`;
+  }, [scrollPosition, scrollState.isAtStart, scrollState.isAtEnd]);
+  
   useEffect(() => {
     setIsClient(true);
     
@@ -841,23 +890,6 @@ export default function Home() {
     });
   };
 
-  // Update on scroll
-  useEffect(() => {
-    const container = timelineRef.current;
-    if (!container) return;
-    
-    const handleScroll = () => {
-      setScrollPosition(container.scrollLeft);
-      setScrollState({
-        isAtStart: container.scrollLeft <= 10,
-        isAtEnd: container.scrollLeft >= container.scrollWidth - container.clientWidth - 10
-      });
-    };
-    
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [timelineRef]);
-
   return (
     <main className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Three.js Background */}
@@ -1095,11 +1127,7 @@ export default function Home() {
                   <div 
                     className="absolute inset-y-0 left-0 h-full rounded-full bg-gradient-to-r from-[#9B59B6] to-[#94A3B8]"
                     style={{ 
-                      width: scrollState.isAtStart ? '0%' : 
-                             scrollState.isAtEnd ? '100%' : 
-                             `${timelineRef.current ? 
-                                (scrollPosition / 
-                                 (timelineRef.current.scrollWidth - timelineRef.current.clientWidth)) * 100 : 0}%`,
+                      width: progressBarWidth,
                       opacity: 0.9,
                       boxShadow: '0 0 10px 2px rgba(155, 89, 182, 0.3), 0 0 15px 4px rgba(155, 89, 182, 0.1)',
                       transition: 'width 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)'
