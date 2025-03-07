@@ -1,0 +1,387 @@
+[
+  {
+    "name": "slam-kalman-localization",
+    "year": 2024,
+    "purpose": "This project implements and tests a Simultaneous Localization and Mapping (SLAM) system using Kalman filters on a simulated robot model. It integrates sensor data from lidar and cameras to create accurate maps of unknown environments while tracking the robot's position. The project aims to enhance robotic navigation and decision-making capabilities in dynamic or noisy environments by improving the accuracy of localization and mapping through the fusion of multiple sensor inputs.",
+    "technologies": [
+      "Python",
+      "ROS2",
+      "Webots",
+      "Kalman Filters",
+      "SLAM"
+    ],
+    "features": [
+      "SLAM implementation with Kalman filtering",
+      "Sensor data integration from lidar and cameras",
+      "Simulation of robotic models in dynamic environments",
+      "Real-time data processing for mapping and localization",
+      "Testing of different kinematic models for performance assessment"
+    ],
+    "architecture": "The project is structured around the Webots simulation environment and ROS2 framework, utilizing Python for scripting. It includes configuration files for simulation settings, launch files for initializing simulations, and Python scripts for node definitions and sensor data handling. The architecture supports modular testing and integration of various components such as lidar publishers and odometry publishers.",
+    "complexity": "High"
+  },
+  {
+    "name": "GH-Repo-Analyzer",
+    "year": 2025,
+    "purpose": "The GH-Repo-Analyzer is a software tool designed to connect to a user's GitHub account, perform a thorough analysis of all associated GitHub projects, and generate detailed markdown reports. These reports provide insights into the programming languages used, the frameworks and libraries implemented, and the overall code structure and organization. Additionally, the tool leverages AI to produce intelligent summaries of each project's purpose and functionality.",
+    "technologies": [
+      "Python",
+      "PyGithub",
+      "openai",
+      "python-dotenv",
+      "argparse"
+    ],
+    "features": [
+      "Repository Discovery",
+      "Language Detection",
+      "Framework Detection",
+      "Code Analysis",
+      "AI-Powered Summaries",
+      "Markdown Reports"
+    ],
+    "architecture": "The GH-Repo-Analyzer is structured around a central Python application that interfaces with GitHub via the PyGithub library and utilizes OpenAI for generating AI-based summaries. The application is configured to handle environment variables through python-dotenv and supports command-line arguments via argparse. It operates by fetching data from GitHub, processing this data, and outputting markdown formatted reports.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "main-portfolio",
+    "year": 2025,
+    "purpose": "This project is a highly interactive and personalized portfolio website for Ali Zargari, a systems engineer. It showcases his professional projects and achievements while providing an immersive user experience that reflects his unique approach to systems engineering. The portfolio is designed to provoke thought, challenge conventional views, and demonstrate Zargari's expertise through dynamic content and interactive features.",
+    "technologies": [
+      "TypeScript",
+      "CSS",
+      "JavaScript",
+      "Next.js",
+      "React",
+      "Tailwind CSS",
+      "Three.js",
+      "Node.js"
+    ],
+    "features": [
+      "Subliminal Messaging",
+      "Warning Modal",
+      "Glitch Effects",
+      "Offbeat Section Titles",
+      "Easter Eggs",
+      "The Cost Section",
+      "Stark Aesthetic",
+      "GitHub Contribution Graph"
+    ],
+    "architecture": "The project utilizes a modern web development stack centered around Next.js, leveraging its capabilities for server-side rendering and static site generation. It employs a component-based architecture with React for building reusable UI elements and Tailwind CSS for styling. The use of Three.js facilitates advanced graphical presentations. The structure is modular, with clear separation between components, data management, and API interactions.",
+    "complexity": "High"
+  },
+  {
+    "name": "whopaidwho",
+    "year": 2025,
+    "purpose": "The 'whopaidwho' project is a web application designed to visualize and analyze political donations and affiliations. It provides users with interactive charts and lists to explore the financial contributions received by politicians, facilitating transparency and insight into political funding sources.",
+    "technologies": [
+      "TypeScript",
+      "CSS",
+      "JavaScript",
+      "React",
+      "Next.js",
+      "TailwindCSS",
+      "Node.js"
+    ],
+    "features": [
+      "Interactive charts for visualizing political donations",
+      "Searchable selectors for filtering politicians and donors",
+      "Responsive web design for optimal user experience across devices",
+      "API integration for real-time data retrieval",
+      "Error handling and loading states for robust user interactions"
+    ],
+    "architecture": "The project utilizes a modular architecture with a clear separation of concerns. Components are organized under the 'src' directory with specific subdirectories for app configurations, components, data models, and API routes. The use of Next.js facilitates server-side rendering and API routes, while React components manage the user interface.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "memento-prod",
+    "year": 2024,
+    "purpose": "Memento-prod is designed to manage and deploy the production environment for a software application named Memento. It orchestrates the deployment of backend, frontend, and firmware components using Docker, ensuring a consistent and isolated runtime environment for each component.",
+    "technologies": [
+      "Docker",
+      "YAML",
+      "Environment Variables"
+    ],
+    "features": [
+      "Containerized deployment of application components",
+      "Environment configuration management",
+      "Separate management of frontend, backend, and firmware modules"
+    ],
+    "architecture": "The project utilizes a microservices architecture facilitated by Docker containers, with separate directories for backend, frontend, and firmware, indicating modular separation of concerns. Configuration is managed through Docker Compose and environment variables.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "frontend",
+    "year": 2024,
+    "purpose": "The Memento frontend is a web-based application designed for managing and organizing personal memories. It provides a user interface that allows users to interactively record, view, and manage their personal historical data through various components like maps, timelines, and media carousels.",
+    "technologies": [
+      "TypeScript",
+      "React",
+      "TailwindCSS",
+      "Vite",
+      "Docker",
+      "Node.js",
+      "Luxon",
+      "Leaflet"
+    ],
+    "features": [
+      "Interactive map integration",
+      "Timeline views for historical data",
+      "Dynamic content filtering",
+      "Responsive media carousel for image and video display",
+      "Customizable UI components"
+    ],
+    "architecture": "The project utilizes a modern front-end architecture with components structured under src directory, leveraging React for UI rendering and state management. It uses Vite as a build tool for fast development and optimized production builds. The styling is managed via TailwindCSS for utility-first CSS, and the project configuration is handled through various config files like vite.config.ts and tailwind.config.js.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "backend",
+    "year": 2024,
+    "purpose": "This project serves as the backend system for the Memento application, designed to manage and serve multimedia memories with support for metadata extraction, geolocation tagging, and image processing. It provides a robust API for uploading and querying multimedia content, integrating with external services for enhanced functionality.",
+    "technologies": [
+      "Python",
+      "FastAPI",
+      "Docker",
+      "Elasticsearch",
+      "Geoapify",
+      "Poetry",
+      "Caddy"
+    ],
+    "features": [
+      "RESTful API for multimedia management",
+      "Integration with Elasticsearch for data storage and retrieval",
+      "Metadata extraction from multimedia files",
+      "Geolocation tagging using Geoapify",
+      "Image processing capabilities",
+      "Environment-specific configuration",
+      "Containerized deployment with Docker"
+    ],
+    "architecture": "The project utilizes a microservices architecture with modular components for different functionalities such as API routing, settings management, and external service integration. It leverages FastAPI for the web framework, structured around a central application instance that routes to various endpoints defined in separate modules.",
+    "complexity": "High"
+  },
+  {
+    "name": "firmware",
+    "year": 2024,
+    "purpose": "This project develops firmware for the Memento device, which integrates a camera and WiFi connectivity on a Seeed Studio XIAO ESP32S3 Sense board. The primary function is to enable the capture and transmission of images over a WiFi network.",
+    "technologies": [
+      "C",
+      "C++",
+      "Arduino IDE",
+      "ESP32"
+    ],
+    "features": [
+      "Camera integration with GPIO pin configuration",
+      "WiFi connectivity setup",
+      "Image capture and processing",
+      "Configuration and management via Arduino IDE"
+    ],
+    "architecture": "The project is structured around the Arduino programming environment, utilizing .ino and .h files for defining the main program logic and configuration settings, respectively. The firmware is specifically tailored for the ESP32 microcontroller, leveraging its GPIO capabilities for camera operations and its networking facilities for WiFi connectivity.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "Content-Generator",
+    "year": 2024,
+    "purpose": "The Content-Generator project is designed to automate the creation of multimedia content by scraping text from web sources, summarizing it, converting it to speech, and potentially integrating it into videos. It leverages advanced web scraping, natural language processing, and text-to-speech technologies to generate content that can be used in various multimedia formats.",
+    "technologies": [
+      "Python",
+      "PRAW",
+      "BeautifulSoup",
+      "Google Cloud Text-to-Speech",
+      "requests",
+      "dotenv"
+    ],
+    "features": [
+      "Scraping web content using BeautifulSoup and PRAW",
+      "Extracting and summarizing text",
+      "Converting text to speech using Google Cloud Text-to-Speech",
+      "Environment variable management with dotenv",
+      "Error handling and status code verification"
+    ],
+    "architecture": "The project is structured with a modular approach, separating functionalities into distinct Python scripts for scraping, text generation, and speech synthesis. This separation enhances maintainability and scalability. The use of .env for configuration management and .xml files for IDE settings indicates a well-organized development environment.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "XML",
+    "year": 2024,
+    "purpose": "This project is designed to validate XML files against their corresponding XML Schema Definitions (XSDs) to ensure they adhere to specified schema standards. It specifically validates XML documents for buildings and students, confirming their structure and data integrity.",
+    "technologies": [
+      "Java",
+      "XML",
+      "XSD"
+    ],
+    "features": [
+      "XML validation against XSD",
+      "Error handling and reporting for XML validation failures"
+    ],
+    "architecture": "The project is structured with a Java-based validation mechanism housed within the src directory, alongside XML and XSD files. The Java program, Validator.java, utilizes the javax.xml.validation package to perform the validation. The project configuration is managed within the .idea directory, typical of IntelliJ IDEA environments.",
+    "complexity": "Low"
+  },
+  {
+    "name": "CS-157A-Project-DishSocial",
+    "year": 2024,
+    "purpose": "DishSocial is a web-based social networking platform specifically designed for food enthusiasts. It allows users to register, log in, and interact with a community through features like recipe sharing, profile customization, and user settings management. The platform serves as a hub for users to connect over shared culinary interests, exchange recipes, and personalize their user experience.",
+    "technologies": [
+      "JavaScript",
+      "Node.js",
+      "HTML",
+      "CSS",
+      "MySQL"
+    ],
+    "features": [
+      "User authentication",
+      "Recipe management",
+      "Profile customization",
+      "Real-time data interaction",
+      "Responsive web design"
+    ],
+    "architecture": "The project is structured into a client-server model with distinct directories for client, server, and database management. The client side is built using HTML, CSS, and JavaScript, leveraging Webpack for module bundling. The server side is implemented in Node.js, handling API requests and interfacing with a MySQL database for persistent storage. Security certificates and configuration settings ensure secure connections and deployment.",
+    "complexity": "High"
+  },
+  {
+    "name": "SmartChat",
+    "year": 2024,
+    "purpose": "SmartChat is an advanced AI-driven communication platform designed to facilitate intelligent and contextually relevant interactions between users and multiple AI models. It dynamically routes inquiries to the most suitable AI model, ensuring precise and context-aware responses.",
+    "technologies": [
+      "JavaScript",
+      "React",
+      "Node.js",
+      "Express",
+      "PostgreSQL",
+      "Redis",
+      "Webpack",
+      "Vite",
+      "CSS",
+      "SCSS"
+    ],
+    "features": [
+      "Dynamic AI model integration",
+      "Advanced security and user authentication",
+      "Real-time data handling",
+      "Scalable server and database infrastructure"
+    ],
+    "architecture": "SmartChat is structured into three main directories: Client, Server, and Database. The Client handles the frontend with React, utilizing Webpack and Vite for bundling. The Server, built on Express, manages API requests, authentication, and session storage with Redis. The Database uses PostgreSQL, structured to support users, sessions, and AI agent data.",
+    "complexity": "High"
+  },
+  {
+    "name": "CS-131-Project-iBank",
+    "year": 2022,
+    "purpose": "CS-131-Project-iBank is a web-based banking application designed to manage user accounts and financial transactions securely. It facilitates the registration of new bank users, handling of user authentication, and supports operations such as balance inquiries and fund transfers between accounts.",
+    "technologies": [
+      "PHP",
+      "HTML",
+      "CSS",
+      "SCSS",
+      "SQL",
+      "Hack"
+    ],
+    "features": [
+      "User registration and authentication",
+      "Account management",
+      "Balance inquiry",
+      "Fund transfer",
+      "Database integration for persistent data storage"
+    ],
+    "architecture": "The project is structured with a backend primarily written in PHP, interfacing with a MySQL database for data persistence. Frontend HTML pages are styled with CSS and SCSS, providing a user-friendly interface. The application follows a traditional multi-tier architecture, separating data handling, business logic, and presentation layers.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "Page",
+    "year": 2021,
+    "purpose": "Page serves as a central platform to showcase various projects created by the developer, Ali Zargari. It features a custom-built transition effect, demonstrating the developer's skills in front-end design and interaction.",
+    "technologies": [
+      "JavaScript",
+      "SCSS",
+      "Webpack",
+      "Node.js",
+      "HTMLWebpackPlugin",
+      "animate.css",
+      "lodash"
+    ],
+    "features": [
+      "Dynamic navigation creation",
+      "Custom page transitions",
+      "Responsive design using SCSS",
+      "Modular JavaScript structure",
+      "Live reloading with Webpack Dev Server"
+    ],
+    "architecture": "The project utilizes a modular architecture with separate JavaScript files for different components such as navigation, footer, and main content. SCSS is used for styling, organized into essential styles and variables for maintainability. Webpack bundles the JavaScript and SCSS files, optimizing them for deployment.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "Tic-Tac-Toe",
+    "year": 2021,
+    "purpose": "This project implements a web-based Tic-Tac-Toe game that allows players to engage in a classic two-player grid-based game. The game is designed to run in web browsers, specifically optimized for Chrome, and features a visually appealing user interface with animations and custom fonts.",
+    "technologies": [
+      "JavaScript",
+      "CSS",
+      "HTML",
+      "Web Animations API"
+    ],
+    "features": [
+      "Interactive Tic-Tac-Toe game board",
+      "Customizable player names and symbols",
+      "Score tracking for two players",
+      "Dynamic grid that updates based on player interaction",
+      "Stylish visual effects using CSS and external animations"
+    ],
+    "architecture": "The project is structured with a main HTML file that serves as the entry point, linking to CSS for styling and JavaScript for game logic. The JavaScript is modularized into separate files for game control and utility functions. The project also includes a .idea directory for project configuration settings specific to JetBrains IDEs.",
+    "complexity": "Medium"
+  },
+  {
+    "name": "TODO-App",
+    "year": 2021,
+    "purpose": "The TODO-App is designed to facilitate goal-setting and task management. It allows users to create, manage, and track tasks or goals through a user-friendly web interface. The application emphasizes simplicity and functionality, enabling users to focus on productivity without unnecessary complexity.",
+    "technologies": [
+      "JavaScript",
+      "CSS",
+      "HTML"
+    ],
+    "features": [
+      "Task creation",
+      "Task management",
+      "Visual task tracking",
+      "Responsive web design"
+    ],
+    "architecture": "The project is structured with a front-end only architecture, utilizing HTML for structure, CSS for styling, and JavaScript for dynamic interactions and functionalities. It includes a main HTML file that links to CSS for styling and JavaScript files for handling logic and UI interactions. The JavaScript files are modular, with one main file handling the application logic and another providing utility functions.",
+    "complexity": "Low"
+  },
+  {
+    "name": "Sketch",
+    "year": 2021,
+    "purpose": "Sketch is a web-based application designed to provide users with a simple interface for creating grid-based sketches. The application allows users to interactively draw on a grid canvas, manipulating elements and their properties to create visual designs.",
+    "technologies": [
+      "JavaScript",
+      "HTML",
+      "CSS"
+    ],
+    "features": [
+      "Interactive grid-based drawing canvas",
+      "Dynamic manipulation of canvas elements",
+      "Responsive design for various display sizes",
+      "Customizable grid and canvas dimensions"
+    ],
+    "architecture": "The project is structured with a main HTML file that serves as the entry point, linking to JavaScript files that handle application logic. The JavaScript files are modular, with one main file for initializing and controlling the sketch functionality and a helper file for setting up and manipulating HTML and CSS properties. The project's configuration files suggest it is set up for development with IntelliJ IDEA, indicating an IDE-specific project structure.",
+    "complexity": "Low"
+  },
+  {
+    "name": "SocialSync",
+    "year": 2024,
+    "purpose": "SocialSync is a comprehensive software platform designed to facilitate the management and interaction between patients and healthcare practitioners, specifically targeting those dealing with Autism Spectrum Disorder (ASD). The system enables secure data handling, appointment scheduling, and communication between registered users, enhancing the efficiency and effectiveness of healthcare delivery.",
+    "technologies": [
+      "Python",
+      "Flask",
+      "SQLAlchemy",
+      "PyQt5",
+      "TensorFlow",
+      "MySQL"
+    ],
+    "features": [
+      "User authentication and management",
+      "Data encryption and security",
+      "Appointment scheduling",
+      "Real-time data analysis",
+      "Interactive user interface"
+    ],
+    "architecture": "SocialSync employs a multi-tier architecture with distinct frontend and backend services. The frontend is built using PyQt5 for a rich user interface, while the backend leverages Flask for handling API requests and SQLAlchemy for database interactions. Machine learning components are integrated using TensorFlow, enhancing the platform's capability to analyze patient data.",
+    "complexity": "High"
+  }
+]

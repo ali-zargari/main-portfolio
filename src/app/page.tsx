@@ -11,6 +11,7 @@ import TheCost from '@/components/TheCost';
 import GlitchText from '@/components/GlitchText';
 import WarningModal from '@/components/WarningModal';
 import { projects } from '@/data/projects';
+import githubRepoData from '@/data/github_repo_analysis.json';
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false });
 
@@ -289,6 +290,174 @@ function GitHubContributions() {
   );
 }
 
+// ProjectCard component with its own state
+function ProjectCard({ project, isExpanded, onToggleExpand }: { project: any, isExpanded: boolean, onToggleExpand: () => void }) {
+  return (
+    <div 
+      className={`w-72 flex-shrink-0 relative rounded-xl overflow-hidden transition-all duration-500 group shadow-xl hover:shadow-[#94A3B8]/20 ${isExpanded ? 'z-20' : 'z-10'}`}
+      style={{
+        transform: isExpanded ? 'translateY(-8px)' : 'translateY(0)',
+        boxShadow: isExpanded ? '0 10px 25px -5px rgba(0, 0, 0, 0.3)' : '',
+        height: isExpanded ? 'auto' : '460px', // Fixed height for non-expanded cards
+        display: 'flex',
+        flexDirection: 'column',
+        alignSelf: 'flex-start'  // Ensure cards don't stretch to match others
+      }}
+    >
+      {/* Solid background */}
+      <div className="absolute inset-0 bg-[#111] backdrop-blur-sm"></div>
+      
+      {/* Border with project color */}
+      <div 
+        className="absolute inset-0 rounded-xl border border-white/10 group-hover:border-opacity-30 transition-colors duration-300 pointer-events-none" 
+        style={{ borderColor: project.bgColor }}
+      ></div>
+      
+      {/* Project image */}
+      <div 
+        className="block relative h-48 overflow-hidden rounded-t-xl cursor-pointer"
+        onClick={onToggleExpand}
+      >
+        {/* Solid overlay instead of gradient */}
+        <div className="absolute inset-0 bg-black/50 z-10 transition-all duration-500"></div>
+        
+        {project.image ? (
+          <div className="relative h-full w-full transform group-hover:scale-105 transition-transform duration-500">
+            <Image 
+              src={project.image} 
+              alt={project.title} 
+              fill 
+              className="object-cover"
+            />
+          </div>
+        ) : (
+          <div 
+            className="relative h-full w-full transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center"
+            style={{ background: project.gradient }}
+          >
+            <div 
+              className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold"
+              style={{ backgroundColor: project.bgColor, color: '#fff' }}
+            >
+              {project.initials}
+            </div>
+          </div>
+        )}
+        
+        {/* Project link button */}
+        <a 
+          href={project.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute top-3 left-3 z-20 bg-black/70 hover:bg-black text-white/80 hover:text-white text-xs px-2 py-1 rounded-full border border-white/10 hover:border-white/30 transition-all duration-300 flex items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>GitHub</span>
+        </a>
+        
+        <div className="absolute top-3 right-3 z-20">
+          <span className="text-xs font-mono text-white/80 bg-black px-2 py-1 rounded-full border border-white/10">{project.year}</span>
+        </div>
+        
+        {/* Move title to top of image instead of bottom */}
+        <div className="absolute top-0 left-0 p-4 z-20 w-full bg-gradient-to-b from-black/80 to-transparent">
+          <h3 className="text-lg font-bold text-white group-hover:text-[#94A3B8] transition-colors duration-300">{project.title}</h3>
+        </div>
+      </div>
+      
+      {/* Project details */}
+      <div className="p-5 relative z-10 transition-all duration-500 flex-grow flex flex-col justify-between">
+        <div>
+          <div className="inline-block px-3 py-1 bg-black border border-white/10 rounded-full text-xs font-mono text-white/70 mb-3 self-start">
+            {project.milestone}
+          </div>
+          
+          {/* Description with expand/collapse functionality */}
+          <div className="relative mb-4">
+            <p className={`text-sm text-white/80 leading-relaxed transition-all duration-500 overflow-hidden
+              ${isExpanded ? '' : 'line-clamp-3'}`}
+              style={{ 
+                height: isExpanded ? 'auto' : undefined,
+                position: isExpanded ? 'relative' : undefined,
+                minHeight: !isExpanded ? '4.5rem' : undefined, // Ensure consistent height for 3 lines
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: isExpanded ? 'unset' : 3
+              }}>
+              {project.description}
+            </p>
+            
+            {/* Gradient overlay for collapsed state */}
+            {!isExpanded && (
+              <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-[#111] to-transparent"></div>
+            )}
+          </div>
+        </div>
+        
+        <div>
+          {/* Technologies */}
+          <div className={`flex flex-wrap gap-2 pt-2 mb-4 ${isExpanded ? '' : 'overflow-hidden'}`} 
+               style={{ minHeight: isExpanded ? 'auto' : '40px' }}>
+            {project.technologies && project.technologies.length > 0 ? (
+              <>
+                {/* When expanded, show all technologies; when collapsed, show only first 4 */}
+                {(isExpanded ? project.technologies : project.technologies.slice(0, 4)).map((tech: string, techIndex: number) => (
+                  <span 
+                    key={techIndex} 
+                    className="px-2 py-1 mb-1 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80 inline-block"
+                  >
+                    {tech}
+                  </span>
+                ))}
+                {/* Only show "+X more" when not expanded and there are more than 4 technologies */}
+                {!isExpanded && project.technologies.length > 4 && (
+                  <span className="px-2 py-1 mb-1 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80 inline-block">
+                    +{project.technologies.length - 4} more
+                  </span>
+                )}
+              </>
+            ) : (
+              <span className="px-2 py-1 mb-1 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80 inline-block">
+                No technologies listed
+              </span>
+            )}
+          </div>
+          
+          {/* Action buttons */}
+          <div className="flex justify-center items-center">
+            <button 
+              onClick={onToggleExpand}
+              className={`inline-flex items-center px-3 py-1 bg-black border border-white/10 text-white/70 text-xs font-mono hover:bg-black transition-all duration-300 rounded-full
+                ${isExpanded ? 'animate-pulse-once' : ''}`}
+            >
+              {isExpanded ? 'Collapse' : 'Expand'}
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width="12" 
+                height="12" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={`ml-1 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [loaded, setLoaded] = useState(false);
   const [currentTitle, setCurrentTitle] = useState(0);
@@ -303,6 +472,25 @@ export default function Home() {
     tx: string;
     ty: string;
   }>>([]);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  // Track expanded cards with their indices
+  const [expandedCardIndices, setExpandedCardIndices] = useState<number[]>([]);
+  
+  // Function to toggle a card's expanded state
+  const toggleCardExpansion = (index: number) => {
+    setExpandedCardIndices(prev => {
+      if (prev.includes(index)) {
+        return prev.filter(i => i !== index);
+      } else {
+        return [...prev, index];
+      }
+    });
+  };
+  
+  // Check if a specific card is expanded
+  const isCardExpanded = (index: number) => {
+    return expandedCardIndices.includes(index);
+  };
   
   // Animation styles
   const fadeIn = {
@@ -371,83 +559,77 @@ export default function Home() {
     };
   };
 
-  // Smaller projects data
-  const smallerProjects = [
-    {
-      title: "Weather Dashboard",
-      description: "My first React project - a weather app that taught me API integration and state management.",
-      image: "https://via.placeholder.com/600x400/111111/00FFFF?text=Weather+Dashboard",
-      link: "https://github.com/ali-zargari/weather-dashboard",
-      technologies: ["React", "OpenWeatherAPI", "CSS"],
-      year: "2021",
-      milestone: "First steps with modern frontend frameworks"
-    },
-    {
-      title: "Task Tracker",
-      description: "Exploring a different framework with Vue.js while learning about local storage and UI design principles.",
-      image: "https://via.placeholder.com/600x400/111111/9B59B6?text=Task+Tracker",
-      link: "https://github.com/ali-zargari/task-tracker",
-      technologies: ["Vue.js", "LocalStorage", "Tailwind CSS"],
-      year: "2021",
-      milestone: "Expanding my frontend toolkit"
-    },
-    {
-      title: "Code Snippet Library",
-      description: "My first full-stack application with a database, authentication, and server-side rendering.",
-      image: "https://via.placeholder.com/600x400/111111/00FFFF?text=Code+Snippets",
-      link: "https://github.com/ali-zargari/code-snippets",
-      technologies: ["Next.js", "MongoDB", "Prism.js"],
-      year: "2022",
-      milestone: "Diving into backend development"
-    },
-    {
-      title: "Budget Calculator",
-      description: "Applied data visualization techniques to create an interactive financial planning tool.",
-      image: "https://via.placeholder.com/600x400/111111/9B59B6?text=Budget+Calculator",
-      link: "https://github.com/ali-zargari/budget-calculator",
-      technologies: ["React", "Chart.js", "LocalStorage"],
-      year: "2022",
-      milestone: "Learning data visualization"
-    },
-    {
-      title: "Neural Network Visualizer",
-      description: "Combined my growing interest in AI with interactive visualizations to help understand neural networks.",
-      image: "https://via.placeholder.com/600x400/111111/00FFFF?text=Neural+Network+Visualizer",
-      link: "https://github.com/ali-zargari/neural-net-viz",
-      technologies: ["TypeScript", "D3.js", "TensorFlow.js"],
-      year: "2023",
-      milestone: "Merging AI with web technologies"
-    },
-    {
-      title: "IoT Data Monitor",
-      description: "Real-time dashboard for IoT devices, representing my shift toward integrated systems development.",
-      image: "https://via.placeholder.com/600x400/111111/9B59B6?text=IoT+Monitor",
-      link: "https://github.com/ali-zargari/iot-monitor",
-      technologies: ["React", "WebSockets", "MQTT", "Node.js"],
-      year: "2023",
-      milestone: "Building connected systems"
-    }
-  ];
+  // Smaller projects data - now loaded from JSON file
+  const smallerProjects = githubRepoData
+    .slice() // Create a copy to avoid mutating the original array
+    .sort((a, b) => b.year - a.year) // Sort by year in descending order
+    .map(repo => {
+    // Generate a unique but consistent color based on the repo name
+    const getColorFromName = (name: string) => {
+      const colors = [
+        '#3498db', '#9b59b6', '#2ecc71', '#e74c3c', '#f39c12', 
+        '#1abc9c', '#d35400', '#c0392b', '#16a085', '#8e44ad',
+        '#27ae60', '#2980b9', '#f1c40f', '#e67e22', '#7f8c8d'
+      ];
+      
+      // Simple hash function to get a consistent index
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      
+      // Use the hash to pick a color
+      const index = Math.abs(hash) % colors.length;
+      return colors[index];
+    };
+    
+    // Get a color for this repo
+    const repoColor = getColorFromName(repo.name);
+    
+    // Create a gradient background for the thumbnail
+    const gradientBg = `linear-gradient(135deg, ${repoColor}40, ${repoColor}10)`;
+    
+    // Get first letter of each word in the repo name for the thumbnail text
+    const initials = repo.name
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('');
+    
+    return {
+      title: repo.name,
+      description: repo.purpose,
+      // Use a dynamic thumbnail with gradient and initials instead of placeholder
+      image: null, // We'll render a custom thumbnail
+      bgColor: repoColor,
+      gradient: gradientBg,
+      initials: initials.length > 3 ? initials.substring(0, 3) : initials,
+      link: `https://github.com/ali-zargari/${repo.name}`,
+      technologies: repo.technologies,
+      year: repo.year.toString(),
+      milestone: repo.complexity
+    };
+  });
 
   // Development Journey Timeline - Horizontal
-  const timelineRef = useRef<HTMLDivElement>(null);
   const [activeYear, setActiveYear] = useState('2021');
   
+  // Scroll to projects from a specific year
   const scrollToYear = (year: string) => {
     if (!timelineRef.current) return;
     
-    const yearIndex = smallerProjects.findIndex(project => project.year === year);
-    if (yearIndex === -1) return;
+    // Find the first project from this year
+    const projectIndex = smallerProjects.findIndex(p => p.year === year);
+    if (projectIndex === -1) return;
     
-    const cardWidth = 320; // width + margin
-    const scrollPosition = yearIndex * cardWidth;
+    // Calculate the scroll position (each card is approximately 288px wide + 32px gap)
+    const cardWidth = 288 + 32; // card width + gap
+    const scrollPosition = projectIndex * cardWidth;
     
+    // Scroll to the position with smooth animation
     timelineRef.current.scrollTo({
       left: scrollPosition,
       behavior: 'smooth'
     });
-    
-    setActiveYear(year);
   };
   
   const scrollTimeline = (direction: 'left' | 'right') => {
@@ -664,7 +846,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Development Journey Timeline - Horizontal */}
+      {/* Development Journey Timeline - Elegant Redesign */}
       <section className="py-20 bg-black/30 relative z-10">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
@@ -693,78 +875,24 @@ export default function Home() {
               ref={timelineRef}
               className="overflow-x-auto pb-8 hide-scrollbar flex-grow mx-2"
             >
-              <div className="flex space-x-8 min-w-max px-8 py-4">
-                {smallerProjects.map((project, index) => (
-                  <div 
-                    key={index} 
-                    className="w-72 flex-shrink-0 relative rounded-xl overflow-hidden transition-all duration-300 group shadow-xl hover:shadow-[#94A3B8]/20"
-                  >
-                    {/* Solid background */}
-                    <div className="absolute inset-0 bg-[#111] backdrop-blur-sm"></div>
-                    
-                    {/* Simple border */}
-                    <div className="absolute inset-0 rounded-xl border border-white/10 group-hover:border-[#94A3B8]/30 transition-colors duration-300 pointer-events-none"></div>
-                    
-                    {/* Project image */}
-                    <a 
-                      href={project.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block relative h-48 overflow-hidden rounded-t-xl"
-                    >
-                      {/* Solid overlay instead of gradient */}
-                      <div className="absolute inset-0 bg-black/50 z-10"></div>
-                      {project.image && (
-                        <div className="relative h-full w-full transform group-hover:scale-105 transition-transform duration-500">
-                          <Image 
-                            src={project.image} 
-                            alt={project.title} 
-                            fill 
-                            className="object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="absolute top-3 right-3 z-20">
-                        <span className="text-xs font-mono text-white/80 bg-black px-2 py-1 rounded-full border border-white/10">{project.year}</span>
-                      </div>
-                      <div className="absolute bottom-0 left-0 p-4 z-20 w-full">
-                        <h3 className="text-lg font-bold text-white group-hover:text-[#94A3B8] transition-colors duration-300">{project.title}</h3>
-                      </div>
-                    </a>
-                    
-                    {/* Project details */}
-                    <div className="p-5 space-y-3 relative z-10">
-                      <div className="inline-block px-3 py-1 bg-black border border-[#9B59B6]/30 rounded-full text-[#9B59B6] text-xs font-mono">
-                        {project.milestone}
-                      </div>
-                      <p className="text-sm text-white/80 leading-relaxed">{project.description}</p>
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {project.technologies.map((tech, techIndex) => (
-                          <span 
-                            key={techIndex} 
-                            className="px-2 py-1 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                      <a 
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center mt-2 px-4 py-1.5 bg-black border border-[#94A3B8]/40 text-[#94A3B8] text-xs font-mono hover:bg-[#94A3B8]/10 transition-all duration-300 rounded-full group-hover:border-[#94A3B8]/60"
-                      >
-                        View Project
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 ml-1.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                ))}
+              {/* Use the expandedCardIndices state from the parent component */}
+              <div className="flex space-x-8 min-w-max px-8 py-4 items-start">
+                {smallerProjects.map((project, index) => {
+                  // Check if this specific card is expanded
+                  const isExpanded = isCardExpanded(index);
+                  
+                  return (
+                    <ProjectCard 
+                      key={index} 
+                      project={project} 
+                      isExpanded={isExpanded} 
+                      onToggleExpand={() => toggleCardExpansion(index)} 
+                    />
+                  );
+                })}
               </div>
             </div>
-
+            
             {/* Right scroll button */}
             <button 
               onClick={() => scrollTimeline('right')}
