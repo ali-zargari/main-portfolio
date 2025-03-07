@@ -292,6 +292,9 @@ function GitHubContributions() {
 
 // ProjectCard component with its own state
 function ProjectCard({ project, isExpanded, onToggleExpand }: { project: any, isExpanded: boolean, onToggleExpand: () => void }) {
+  // Check if the card needs expansion at all (short description and few technologies)
+  const needsExpansion = project.description.length > 140 || (project.technologies && project.technologies.length > 4);
+  
   return (
     <div 
       className="w-80 flex-shrink-0 relative rounded-xl overflow-hidden"
@@ -311,16 +314,16 @@ function ProjectCard({ project, isExpanded, onToggleExpand }: { project: any, is
         {/* HEADER - Fixed height */}
         <div className="h-[70px] p-4 flex justify-between items-start">
           <h3 className="text-xl font-bold text-white hover:text-[#94A3B8] line-clamp-2 w-[70%]" style={{ textShadow: 'none' }}>
-            {project.title}
-          </h3>
-          
+          {project.title}
+        </h3>
+        
           <div className="flex-shrink-0">
             <span className="text-sm font-mono text-white/80 bg-black/50 px-2.5 py-1 rounded-full border border-white/10" style={{ textShadow: 'none' }}>
-              {project.year}
-            </span>
-          </div>
+            {project.year}
+          </span>
         </div>
-        
+      </div>
+      
         {/* BODY */}
         <div className="px-6 py-1 flex flex-col flex-grow overflow-hidden">
           {/* Project logo/badge */}
@@ -333,12 +336,12 @@ function ProjectCard({ project, isExpanded, onToggleExpand }: { project: any, is
                 textShadow: 'none',
                 transition: 'transform 0.3s ease'
               }}
-            >
-              {project.initials}
-            </div>
-          </div>
-          
-          {/* Badges row */}
+        >
+          {project.initials}
+        </div>
+      </div>
+      
+        {/* Badges row */}
           <div className="flex items-center gap-2 h-[30px] mb-3 overflow-x-auto hide-scrollbar">
             <div 
               className="px-3 py-1 bg-black/70 rounded-full text-xs font-mono text-white/80 border border-white/10 flex items-center h-6 flex-shrink-0" 
@@ -346,37 +349,42 @@ function ProjectCard({ project, isExpanded, onToggleExpand }: { project: any, is
             >
               <span className="opacity-70 mr-1" style={{ textShadow: 'none' }}>Complexity:</span>
               <span style={{ textShadow: 'none' }}>{project.milestone}</span>
-            </div>
-            
-            {project.link && (
-              <a 
-                href={project.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-1 bg-black/70 rounded-full text-xs font-mono text-white/80 border border-white/10 hover:bg-black hover:text-white transition-all duration-300 flex items-center h-6 flex-shrink-0"
-                onClick={(e) => e.stopPropagation()}
-                style={{ textShadow: 'none' }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                </svg>
-                <span style={{ textShadow: 'none' }}>Repository</span>
-              </a>
-            )}
           </div>
           
-          {/* Description with overflow hidden */}
+          {project.link && (
+            <a 
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+                className="px-3 py-1 bg-black/70 rounded-full text-xs font-mono text-white/80 border border-white/10 hover:bg-black hover:text-white transition-all duration-300 flex items-center h-6 flex-shrink-0"
+              onClick={(e) => e.stopPropagation()}
+                style={{ textShadow: 'none' }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+                <span style={{ textShadow: 'none' }}>Repository</span>
+            </a>
+          )}
+        </div>
+        
+          {/* Description with overflow hidden and ellipsis if needed */}
           <div className="mb-4 transition-all duration-500 ease-in-out">
             <div className={`transition-all duration-500 ease-in-out ${isExpanded ? '' : 'overflow-hidden'}`} style={{ 
               maxHeight: isExpanded ? '1000px' : '140px',
               transition: 'max-height 0.5s ease-in-out'
             }}>
               <p className="text-sm text-white/80 leading-relaxed" style={{ textShadow: 'none' }}>
-                {project.description}
+                {isExpanded 
+                  ? project.description
+                  : project.description.length > 140 
+                    ? project.description.substring(0, 140).trim() + '...' 
+                    : project.description
+                }
               </p>
             </div>
-          </div>
-          
+        </div>
+        
           {/* Technologies with limited display */}
           <div className="mb-4 transition-all duration-500 ease-in-out">
             <h4 className="text-xs font-mono text-white/60 mb-2 uppercase tracking-wider" style={{ textShadow: 'none' }}>
@@ -386,60 +394,63 @@ function ProjectCard({ project, isExpanded, onToggleExpand }: { project: any, is
               maxHeight: isExpanded ? '1000px' : '120px',
               transition: 'max-height 0.5s ease-in-out'
             }}>
-              {project.technologies && project.technologies.length > 0 ? (
-                <>
+            {project.technologies && project.technologies.length > 0 ? (
+              <>
                   {/* Show all techs when expanded, or just first 4 when collapsed */}
-                  {(isExpanded ? project.technologies : project.technologies.slice(0, 4)).map((tech: string, techIndex: number) => (
-                    <span 
-                      key={techIndex} 
+                {(isExpanded ? project.technologies : project.technologies.slice(0, 4)).map((tech: string, techIndex: number) => (
+                  <span 
+                    key={techIndex} 
                       className="px-2.5 py-1 bg-black/50 text-xs font-mono rounded-full border border-white/10 text-white/80 mb-1"
                       style={{ textShadow: 'none' }}
-                    >
-                      {tech}
-                    </span>
-                  ))}
+                  >
+                    {tech}
+                  </span>
+                ))}
                   
                   {/* Show "+X more" badge when collapsed and there are more than 4 techs */}
-                  {!isExpanded && project.technologies.length > 4 && (
+                {!isExpanded && project.technologies.length > 4 && (
                     <span className="px-2.5 py-1 bg-black/40 text-xs font-mono rounded-full border border-white/5 text-white/70 mb-1"
                       style={{ textShadow: 'none' }}
                     >
-                      +{project.technologies.length - 4} more
-                    </span>
-                  )}
-                </>
-              ) : (
+                    +{project.technologies.length - 4} more
+                  </span>
+                )}
+              </>
+            ) : (
                 <span className="px-2.5 py-1 bg-black/50 text-xs font-mono rounded-full border border-white/10 text-white/80" style={{ textShadow: 'none' }}>
-                  No technologies listed
-                </span>
-              )}
+                No technologies listed
+              </span>
+            )}
             </div>
           </div>
         </div>
         
-        {/* FOOTER with button */}
+        {/* FOOTER with button - only show if expansion is needed */}
         <div className="h-[50px] px-6 flex items-center justify-center mt-auto">
+          {/* Check if expansion is needed based on content length, or already expanded */}
+          {(needsExpansion || isExpanded) && (
           <button 
             onClick={onToggleExpand}
-            className="px-4 py-1 bg-black/60 text-white/80 hover:text-white text-xs font-mono rounded-full border border-white/10 hover:border-white/20 flex items-center"
-            style={{ textShadow: 'none' }}
-          >
-            {isExpanded ? (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
-                  <polyline points="18 15 12 9 6 15"></polyline>
-                </svg>
-                <span style={{ textShadow: 'none' }}>Collapse</span>
-              </>
-            ) : (
-              <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
-                  <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
-                <span style={{ textShadow: 'none' }}>Expand</span>
-              </>
-            )}
+              className="px-4 py-1 bg-black/60 text-white/80 hover:text-white text-xs font-mono rounded-full border border-white/10 hover:border-white/20 flex items-center"
+              style={{ textShadow: 'none' }}
+            >
+              {isExpanded ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                    <polyline points="18 15 12 9 6 15"></polyline>
+                  </svg>
+                  <span style={{ textShadow: 'none' }}>Collapse</span>
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+                  <span style={{ textShadow: 'none' }}>Expand</span>
+                </>
+              )}
           </button>
+          )}
         </div>
       </div>
     </div>
@@ -463,6 +474,9 @@ export default function Home() {
   const timelineRef = useRef<HTMLDivElement>(null);
   // Track expanded cards with their indices
   const [expandedCardIndices, setExpandedCardIndices] = useState<number[]>([]);
+  
+  // Add state to track if we're at the beginning or end of scroll
+  const [scrollState, setScrollState] = useState({ isAtStart: true, isAtEnd: false });
   
   // Function to toggle a card's expanded state
   const toggleCardExpansion = (index: number) => {
@@ -620,16 +634,85 @@ export default function Home() {
     });
   };
   
+  // Update scroll state on scroll events
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!timelineRef.current) return;
+      const container = timelineRef.current;
+      
+      // Check if at start or end
+      const isAtStart = container.scrollLeft <= 10; // Small threshold for slight inconsistencies
+      const isAtEnd = Math.abs((container.scrollWidth - container.clientWidth) - container.scrollLeft) <= 10;
+      
+      // Update scroll state
+      setScrollState({ isAtStart, isAtEnd });
+      
+      // Update scroll indicator position
+      const indicator = container.querySelector('.scroll-indicator');
+      if (indicator && indicator instanceof HTMLElement) {
+        const scrollPercent = container.scrollLeft / (container.scrollWidth - container.clientWidth);
+        const maxLeft = container.clientWidth - 40; // 40 is indicator width
+        const newLeft = Math.max(0, Math.min(maxLeft * scrollPercent, maxLeft));
+        
+        // Set the position without transition for direct scrolling
+        indicator.style.left = `${newLeft}px`;
+      }
+    };
+    
+    const container = timelineRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      // Call once to initialize
+      handleScroll();
+    }
+    
+    return () => {
+      if (container) {
+        container.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [timelineRef.current]);
+  
+  // Scroll the timeline to the left or right
   const scrollTimeline = (direction: 'left' | 'right') => {
     if (!timelineRef.current) return;
     
-    const scrollAmount = 320; // One card width
-    const newScrollPosition = timelineRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+    const container = timelineRef.current;
+    const scrollAmount = 320; // Adjust to match card width + gap
     
-    timelineRef.current.scrollTo({
-      left: newScrollPosition,
+    // Get the current scroll position
+    const currentScrollLeft = container.scrollLeft;
+    
+    // Calculate the new scroll position
+    const newScrollLeft = direction === 'left' 
+      ? Math.max(0, currentScrollLeft - scrollAmount)
+      : Math.min(container.scrollWidth - container.clientWidth, currentScrollLeft + scrollAmount);
+    
+    // Smoothly scroll to the new position
+    container.scrollTo({
+      left: newScrollLeft,
       behavior: 'smooth'
     });
+    
+    // Animate the position of the scroll indicator
+    setTimeout(() => {
+      const indicator = container.querySelector('.scroll-indicator');
+      if (indicator && indicator instanceof HTMLElement) {
+        // Calculate the position based on scroll progress
+        const scrollPercent = newScrollLeft / (container.scrollWidth - container.clientWidth);
+        const maxLeft = container.clientWidth - 40; // 40 is indicator width
+        const newLeft = Math.max(0, Math.min(maxLeft * scrollPercent, maxLeft));
+        
+        // Apply transition to the indicator
+        indicator.style.transition = 'left 0.5s ease-out';
+        indicator.style.left = `${newLeft}px`;
+        
+        // Update scroll state after animation
+        const isAtStart = newScrollLeft <= 10;
+        const isAtEnd = Math.abs((container.scrollWidth - container.clientWidth) - newScrollLeft) <= 10;
+        setScrollState({ isAtStart, isAtEnd });
+      }
+    }, 50); // Small delay to sync with scroll animation
   };
 
   return (
@@ -847,7 +930,8 @@ export default function Home() {
 
           {/* Simple horizontal scrolling container with navigation buttons */}
           <div className="relative flex items-center mx-auto max-w-full px-4 md:px-8 lg:px-12">
-            {/* Left scroll button - restore original style */}
+            {/* Left scroll button - only show when not at start */}
+            {!scrollState.isAtStart && (
             <button 
               onClick={() => scrollTimeline('left')}
               className="z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-colors duration-300 mr-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0"
@@ -857,6 +941,7 @@ export default function Home() {
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
+            )}
               
             {/* Scrollable container */}
             <div 
@@ -865,7 +950,7 @@ export default function Home() {
             >
               {/* Visual scroll indicator - keep this improvement */}
               <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
-                <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#94A3B8] to-[#94A3B8]/30 opacity-70"></div>
+                <div className="absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-[#94A3B8] to-[#94A3B8]/30 opacity-70 scroll-indicator" style={{ transition: 'left 0.5s ease-out' }}></div>
               </div>
               
               {/* Projects container */}
@@ -874,9 +959,12 @@ export default function Home() {
                   // Check if this specific card is expanded
                   const isExpanded = isCardExpanded(index);
                   
+                  // Check if card needs expansion (long description or many technologies)
+                  const needsExpansion = project.description.length > 140 || (project.technologies && project.technologies.length > 4);
+                  
                   return (
                     <div 
-                      key={index}
+                      key={index} 
                       className="w-80 flex-shrink-0 relative rounded-xl overflow-hidden"
                       style={{
                         height: isExpanded ? 'auto' : '520px',
@@ -948,14 +1036,19 @@ export default function Home() {
                             )}
                           </div>
                           
-                          {/* Description with overflow hidden */}
+                          {/* Description with overflow hidden and ellipsis if needed */}
                           <div className="mb-4 transition-all duration-500 ease-in-out">
                             <div className={`transition-all duration-500 ease-in-out ${isExpanded ? '' : 'overflow-hidden'}`} style={{ 
                               maxHeight: isExpanded ? '1000px' : '140px',
                               transition: 'max-height 0.5s ease-in-out'
                             }}>
                               <p className="text-sm text-white/80 leading-relaxed" style={{ textShadow: 'none' }}>
-                                {project.description}
+                                {isExpanded 
+                                  ? project.description
+                                  : project.description.length > 140 
+                                    ? project.description.substring(0, 140).trim() + '...' 
+                                    : project.description
+                                }
                               </p>
                             </div>
                           </div>
@@ -1000,29 +1093,32 @@ export default function Home() {
                           </div>
                         </div>
                         
-                        {/* FOOTER with button */}
+                        {/* FOOTER with button - only show if expansion is needed */}
                         <div className="h-[50px] px-6 flex items-center justify-center mt-auto">
-                          <button 
-                            onClick={() => toggleCardExpansion(index)}
-                            className="px-4 py-1 bg-black/60 text-white/80 hover:text-white text-xs font-mono rounded-full border border-white/10 hover:border-white/20 flex items-center"
-                            style={{ textShadow: 'none' }}
-                          >
-                            {isExpanded ? (
-                              <>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
-                                  <polyline points="18 15 12 9 6 15"></polyline>
-                                </svg>
-                                <span style={{ textShadow: 'none' }}>Collapse</span>
-                              </>
-                            ) : (
-                              <>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
-                                  <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                                <span style={{ textShadow: 'none' }}>Expand</span>
-                              </>
-                            )}
-                          </button>
+                          {/* Check if expansion is needed based on content length, or already expanded */}
+                          {(needsExpansion || isExpanded) && (
+                            <button 
+                              onClick={() => toggleCardExpansion(index)}
+                              className="px-4 py-1 bg-black/60 text-white/80 hover:text-white text-xs font-mono rounded-full border border-white/10 hover:border-white/20 flex items-center"
+                              style={{ textShadow: 'none' }}
+                            >
+                              {isExpanded ? (
+                                <>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                                    <polyline points="18 15 12 9 6 15"></polyline>
+                                  </svg>
+                                  <span style={{ textShadow: 'none' }}>Collapse</span>
+                                </>
+                              ) : (
+                                <>
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1.5">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                  </svg>
+                                  <span style={{ textShadow: 'none' }}>Expand</span>
+                                </>
+                              )}
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -1031,7 +1127,8 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Right scroll button - restore original style */}
+            {/* Right scroll button - only show when not at end */}
+            {!scrollState.isAtEnd && (
             <button 
               onClick={() => scrollTimeline('right')}
               className="z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-colors duration-300 ml-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0"
@@ -1041,6 +1138,7 @@ export default function Home() {
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
             </button>
+            )}
           </div>
           
           {/* Journey narrative - keeping the improved journey section but with original styling */}
