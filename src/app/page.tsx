@@ -890,6 +890,56 @@ export default function Home() {
     });
   };
 
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [contactName, setContactName] = useState('');
+  const [contactEmail, setContactEmail] = useState('');
+  const [contactMessage, setContactMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError('');
+    
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          name: contactName, 
+          email: contactEmail, 
+          message: contactMessage 
+        }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+      
+      // Show success message
+      setSubmitSuccess(true);
+      
+      // Reset form after a delay
+      setTimeout(() => {
+        setContactName('');
+        setContactEmail('');
+        setContactMessage('');
+        setSubmitSuccess(false);
+        setShowContactModal(false);
+      }, 3000);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'An error occurred while sending your message');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* Three.js Background */}
@@ -1093,77 +1143,27 @@ export default function Home() {
       </section>
 
       {/* Development Journey Timeline - Elegant Redesign */}
-      <section className="py-20 bg-black/30 relative z-10 overflow-hidden" style={{ textShadow: 'none' }}>
+      <section className="py-28 bg-black/30 relative z-10 overflow-hidden" style={{ textShadow: 'none' }}>
         <div className="container mx-auto px-4 relative z-10">
           <div className="mb-12 text-center">
             <h2 className="text-3xl font-bold mb-6">ADDITIONAL PROJECTS</h2>
-            <div className="w-20 h-1 bg-[#9B59B6] mx-auto mb-8"></div>
-            <p className="text-lg max-w-2xl mx-auto text-white/70 mb-12" style={parallaxStyle(0.03)}>
+            <div className="w-20 h-1 bg-[#9B59B6] mx-auto"></div>
+            <p className="text-lg max-w-2xl mx-auto text-white/70 mb-20" style={parallaxStyle(0.03)}>
               A collection of focused development projects that demonstrate my technical versatility and showcase my skills across various platforms and technologies.
             </p>
           </div>
 
           {/* Simple horizontal scrolling container with navigation */}
-          <div className="relative mx-auto max-w-full px-4 md:px-8 lg:px-12">
-            {/* Navigation bar at the top */}
-            <div className="flex items-center justify-center mb-8 relative">
-              {/* Left scroll button */}
-              <button 
-                onClick={() => scrollTimeline('left')}
-                className={`z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all duration-300 mr-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0 absolute left-0 ${
-                  scrollState.isAtStart ? 'opacity-0 pointer-events-none transform -translate-x-4' : 'opacity-100 transform translate-x-0'
-                }`}
-                aria-label="Previous project"
-                disabled={scrollState.isAtStart || isAnimating}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-              </button>
-              
-              {/* Progress bar - simple implementation */}
-              <div className="flex items-center justify-center py-2 px-6 bg-black/30 backdrop-blur-sm rounded-full border border-white/10">
-                <div className="relative w-60 h-2 bg-white/10 rounded-full overflow-hidden">
-                  <div 
-                    className="absolute inset-y-0 left-0 h-full rounded-full bg-gradient-to-r from-[#9B59B6] to-[#94A3B8]"
-                    style={{ 
-                      width: progressBarWidth,
-                      opacity: 0.9,
-                      boxShadow: '0 0 10px 2px rgba(155, 89, 182, 0.3), 0 0 15px 4px rgba(155, 89, 182, 0.1)',
-                      transition: 'width 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)'
-                    }}
-                  >
-                    {/* Inner animated element for additional movement */}
-                    <div 
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-progress-shine"
-                      aria-hidden="true"
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              {/* Right scroll button */}
-              <button 
-                onClick={() => scrollTimeline('right')}
-                className={`z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all duration-300 ml-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0 absolute right-0 ${
-                  scrollState.isAtEnd ? 'opacity-0 pointer-events-none transform translate-x-4' : 'opacity-100 transform translate-x-0'
-                }`}
-                aria-label="Next project"
-                disabled={scrollState.isAtEnd || isAnimating}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-              </button>
-            </div>
+          <div className="relative mx-auto max-w-full px-4 md:px-8 lg:px-12 mt-16">
+
               
             {/* Scrollable container - fix to allow multiple cards to show */}
             <div 
               ref={timelineRef}
-              className="overflow-x-auto pb-8 hide-scrollbar mx-2"
+              className="overflow-x-auto pb-8 hide-scrollbar mx-2 rounded-xl border border-white/10 p-4 bg-black/20 backdrop-blur-sm"
             >
               {/* Projects container - fix width to allow multiple cards to be visible */}
-              <div className="flex space-x-6 px-4 py-4 items-stretch">
+              <div className="flex space-x-6 items-stretch">
                 {smallerProjects.map((project, index) => {
                   // Check if this specific card is expanded
                   const isExpanded = isCardExpanded(index);
@@ -1335,6 +1335,58 @@ export default function Home() {
                 })}
               </div>
             </div>
+
+              {/* Navigation bar*/}
+              <div className="flex items-center justify-center relative mt-8">
+              {/* Left scroll button */}
+                <button 
+                  onClick={() => scrollTimeline('left')}
+                  className={`z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all duration-300 mr-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0 absolute left-0 ${
+                    scrollState.isAtStart ? 'opacity-0 pointer-events-none transform -translate-x-4' : 'opacity-100 transform translate-x-0'
+                  }`}
+                  aria-label="Previous project"
+                  disabled={scrollState.isAtStart || isAnimating}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+              
+                {/* Progress bar - simple implementation */}
+                <div className="flex items-center justify-center py-2 px-6 bg-black/30 backdrop-blur-sm rounded-full border border-white/10">
+                  <div className="relative w-60 h-2 bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className="absolute inset-y-0 left-0 h-full rounded-full bg-gradient-to-r from-[#9B59B6] to-[#94A3B8]"
+                      style={{ 
+                        width: progressBarWidth,
+                        opacity: 0.9,
+                        boxShadow: '0 0 10px 2px rgba(155, 89, 182, 0.3), 0 0 15px 4px rgba(155, 89, 182, 0.1)',
+                        transition: 'width 0.35s cubic-bezier(0.25, 0.1, 0.25, 1)'
+                      }}
+                    >
+                      {/* Inner animated element for additional movement */}
+                      <div 
+                        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-progress-shine"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  </div>
+                </div>
+              
+              {/* Right scroll button */}
+              <button 
+                onClick={() => scrollTimeline('right')}
+                className={`z-20 bg-black/70 hover:bg-black/90 text-white/70 hover:text-white w-10 h-10 rounded-full flex items-center justify-center border border-white/10 transition-all duration-300 ml-4 hover:border-[#94A3B8]/50 shadow-lg hover:shadow-[#94A3B8]/20 flex-shrink-0 absolute right-0 ${
+                  scrollState.isAtEnd ? 'opacity-0 pointer-events-none transform translate-x-4' : 'opacity-100 transform translate-x-0'
+                }`}
+                aria-label="Next project"
+                disabled={scrollState.isAtEnd || isAnimating}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+              </div>
           </div>
           
           {/* Journey narrative - keeping the improved journey section but with original styling */}
@@ -1372,51 +1424,234 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Final CTA section */}
-      <section className="min-h-[50vh] flex flex-col justify-center items-center px-4 py-20 relative z-10 bg-gradient-to-b from-transparent to-[#0a0a0a]">
-        <div className="max-w-4xl mx-auto text-center" style={parallaxStyle(0.04)}>
-          <h2 className="text-3xl sm:text-5xl font-bold mb-8 tracking-tight">
-            EXPLORE MY WORK
-          </h2>
-          <p className="text-lg mb-12 max-w-2xl mx-auto">
-            Discover my projects in AI, IoT, and software engineering. From smart home systems to assistive technologies.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <Link 
-              href="/quantum-initiatives" 
-              className="bg-[#9B59B6] text-white px-8 py-4 font-mono hover:bg-opacity-80 transition-all duration-300"
+      {/* Contact Section - Redesigned */}
+      <section className="py-32 relative z-10 overflow-hidden">
+        {/* Background elements */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-[#0f0f0f] to-black z-0"></div>
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-repeat opacity-5 z-0"></div>
+        
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-4xl mx-auto">
+            {/* Section heading */}
+            <div className="text-center mb-16" style={parallaxStyle(0.04)}>
+              <h2 className="text-4xl sm:text-5xl font-bold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-[#94A3B8] to-white">
+                Let's Connect
+              </h2>
+              <div className="w-24 h-1 bg-gradient-to-r from-[#9B59B6] to-[#94A3B8] mx-auto mb-8"></div>
+              <p className="text-xl max-w-2xl mx-auto text-white/70">
+                I'm always open to discussing new opportunities, ideas, or just having a conversation about technology.
+              </p>
+            </div>
+            
+            {/* Contact card - centered and expanded */}
+            <div 
+              className="bg-gradient-to-br from-black/80 to-black/40 backdrop-blur-sm border border-white/10 rounded-2xl p-10 shadow-xl transform hover:-translate-y-1 transition-all duration-300 max-w-3xl mx-auto"
+              style={parallaxStyle(0.03)}
             >
-              VIEW PROJECTS
-            </Link>
-            <Link 
-              href="/contact" 
-              className="border border-[#94A3B8] text-[#94A3B8] px-8 py-4 font-mono hover:bg-[#94A3B8] hover:bg-opacity-10 transition-all duration-300"
-            >
-              CONTACT ME
-            </Link>
+              <div className="flex items-center justify-center mb-8">
+                <div className="w-16 h-16 rounded-full bg-[#94A3B8]/20 flex items-center justify-center mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#94A3B8]">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-bold">Get In Touch</h3>
+              </div>
+              
+              <p className="text-white/70 mb-10 text-center max-w-2xl mx-auto">
+                I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision. 
+                Feel free to reach out through any of the channels below.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                <div className="flex items-start">
+                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mr-4 flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#9B59B6]">
+                      <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-medium mb-1 text-lg">Email</div>
+                    <a href="mailto:ali.zargari1@outlook.com" className="text-[#94A3B8] hover:text-white transition-colors">
+                      ali.zargari1@outlook.com
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mr-4 flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#9B59B6]">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                      <rect x="2" y="9" width="4" height="12"></rect>
+                      <circle cx="4" cy="4" r="2"></circle>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-medium mb-1 text-lg">LinkedIn</div>
+                    <a href="https://linkedin.com/in/zargari-ali" target="_blank" rel="noopener noreferrer" className="text-[#94A3B8] hover:text-white transition-colors">
+                      linkedin.com/in/zargari-ali
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mr-4 flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#9B59B6]">
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-medium mb-1 text-lg">GitHub</div>
+                    <a href="https://github.com/alizargari" target="_blank" rel="noopener noreferrer" className="text-[#94A3B8] hover:text-white transition-colors">
+                      github.com/alizargari
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mr-4 flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#9B59B6]">
+                      <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
+                      <circle cx="12" cy="10" r="3"></circle>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-medium mb-1 text-lg">Location</div>
+                    <span className="text-[#94A3B8]">
+                      San Jose, California
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-center">
+                <button 
+                  onClick={() => setShowContactModal(true)} 
+                  className="inline-flex items-center bg-gradient-to-r from-[#94A3B8] to-[#9B59B6] text-white px-10 py-4 rounded-lg font-medium hover:opacity-90 transition-all duration-300 shadow-lg shadow-[#9B59B6]/20 text-lg"
+                >
+                  <span>Send Me a Message</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-3">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
-
-      {/* Contact section */}
-      <section className="py-24 relative z-10">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-6">CONTACT</h2>
-          <div className="w-20 h-1 bg-[#9B59B6] mx-auto mb-8"></div>
-          <p className="text-lg max-w-2xl mx-auto text-white/70 mb-12">
-            Interested in discussing my projects or exploring potential collaboration opportunities? I welcome inquiries about my work and technical expertise.
-          </p>
-          <Link 
-            href="/contact" 
-            className="border border-[#94A3B8] text-[#94A3B8] px-8 py-4 font-mono hover:bg-[#94A3B8] hover:bg-opacity-10 transition-all duration-300"
-          >
-            CONTACT ME
-          </Link>
         </div>
       </section>
 
       {/* The Cost component */}
       <TheCost />
+
+      {/* Contact Modal */}
+      {showContactModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div 
+            className="bg-[#121212] border border-white/10 rounded-lg max-w-md w-full p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={() => setShowContactModal(false)}
+              className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors"
+              aria-label="Close modal"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+            
+            <h3 className="text-2xl font-bold mb-4">Send a Message</h3>
+            
+            {submitSuccess ? (
+              <div className="bg-[#9B59B6]/20 border border-[#9B59B6]/50 rounded-lg p-4 text-center my-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-2 text-[#9B59B6]">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <p className="text-white">Your message has been sent successfully!</p>
+              </div>
+            ) : (
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                {submitError && (
+                  <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-white text-sm">
+                    <p>{submitError}</p>
+                  </div>
+                )}
+                
+                <div>
+                  <label htmlFor="modal-name" className="block text-sm font-medium text-white/80 mb-1">Name</label>
+                  <input
+                    type="text"
+                    id="modal-name"
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    required
+                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#9B59B6] focus:border-transparent transition-all"
+                    placeholder="Your name"
+                    disabled={isSubmitting}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="modal-email" className="block text-sm font-medium text-white/80 mb-1">Email</label>
+                  <input
+                    type="email"
+                    id="modal-email"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    required
+                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#9B59B6] focus:border-transparent transition-all"
+                    placeholder="Your email address"
+                    disabled={isSubmitting}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="modal-message" className="block text-sm font-medium text-white/80 mb-1">Message</label>
+                  <textarea
+                    id="modal-message"
+                    value={contactMessage}
+                    onChange={(e) => setContactMessage(e.target.value)}
+                    required
+                    rows={4}
+                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#9B59B6] focus:border-transparent transition-all"
+                    placeholder="Your message"
+                    disabled={isSubmitting}
+                  ></textarea>
+                </div>
+                
+                <button
+                  type="submit"
+                  className={`w-full bg-[#9B59B6] hover:bg-[#8E44AD] text-white font-medium py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center ${
+                    isSubmitting ? 'opacity-70 cursor-not-allowed' : ''
+                  }`}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <span>Send Message</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                      </svg>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   );
 }

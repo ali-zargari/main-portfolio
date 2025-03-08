@@ -1,6 +1,6 @@
 [
   {
-    "name": "slam-kalman-localization",
+    "name": "Slam/Kalman Localization",
     "year": 2024,
     "purpose": "This project implements and tests a Simultaneous Localization and Mapping (SLAM) system using Kalman filters on a simulated robot model. It integrates sensor data from lidar and cameras to create accurate maps of unknown environments while tracking the robot's position. The project aims to enhance robotic navigation and decision-making capabilities in dynamic or noisy environments by improving the accuracy of localization and mapping through the fusion of multiple sensor inputs.",
     "technologies": [
@@ -43,36 +43,9 @@
     "complexity": "Medium"
   },
   {
-    "name": "main-portfolio",
+    "name": "WhoPaidWho",
     "year": 2025,
-    "purpose": "This project is a highly interactive and personalized portfolio website for Ali Zargari, a systems engineer. It showcases his professional projects and achievements while providing an immersive user experience that reflects his unique approach to systems engineering. The portfolio is designed to provoke thought, challenge conventional views, and demonstrate Zargari's expertise through dynamic content and interactive features.",
-    "technologies": [
-      "TypeScript",
-      "CSS",
-      "JavaScript",
-      "Next.js",
-      "React",
-      "Tailwind CSS",
-      "Three.js",
-      "Node.js"
-    ],
-    "features": [
-      "Subliminal Messaging",
-      "Warning Modal",
-      "Glitch Effects",
-      "Offbeat Section Titles",
-      "Easter Eggs",
-      "The Cost Section",
-      "Stark Aesthetic",
-      "GitHub Contribution Graph"
-    ],
-    "architecture": "The project utilizes a modern web development stack centered around Next.js, leveraging its capabilities for server-side rendering and static site generation. It employs a component-based architecture with React for building reusable UI elements and Tailwind CSS for styling. The use of Three.js facilitates advanced graphical presentations. The structure is modular, with clear separation between components, data management, and API interactions.",
-    "complexity": "High"
-  },
-  {
-    "name": "whopaidwho",
-    "year": 2025,
-    "purpose": "The 'whopaidwho' project is a web application designed to visualize and analyze political donations and affiliations. It provides users with interactive charts and lists to explore the financial contributions received by politicians, facilitating transparency and insight into political funding sources.",
+    "purpose": "This project is a web application designed to visualize and analyze political donations and affiliations. It provides users with interactive charts and lists to explore the financial contributions received by politicians, facilitating transparency and insight into political funding sources.",
     "technologies": [
       "TypeScript",
       "CSS",
@@ -93,13 +66,20 @@
     "complexity": "Medium"
   },
   {
-    "name": "memento-prod",
+    "name": "Memento",
     "year": 2024,
-    "purpose": "Memento-prod is designed to manage and deploy the production environment for a software application named Memento. It orchestrates the deployment of backend, frontend, and firmware components using Docker, ensuring a consistent and isolated runtime environment for each component.",
+    "purpose": "The software for a wearable IoT solution to help individuals with memory impairment organize and access their memories. This compliments an ESP32 device that is used to capture audio and video data at regular intervals.",
     "technologies": [
       "Docker",
-      "YAML",
-      "Environment Variables"
+      "Fast API",
+      "React/ShadCN",
+      "Next.js",
+      "SQLAlchemy",
+      "Node.js",
+      "Vite",
+      "NoSQL",
+      "ESP32"
+      
     ],
     "features": [
       "Containerized deployment of application components",
@@ -107,74 +87,6 @@
       "Separate management of frontend, backend, and firmware modules"
     ],
     "architecture": "The project utilizes a microservices architecture facilitated by Docker containers, with separate directories for backend, frontend, and firmware, indicating modular separation of concerns. Configuration is managed through Docker Compose and environment variables.",
-    "complexity": "Medium"
-  },
-  {
-    "name": "frontend",
-    "year": 2024,
-    "purpose": "The Memento frontend is a web-based application designed for managing and organizing personal memories. It provides a user interface that allows users to interactively record, view, and manage their personal historical data through various components like maps, timelines, and media carousels.",
-    "technologies": [
-      "TypeScript",
-      "React",
-      "TailwindCSS",
-      "Vite",
-      "Docker",
-      "Node.js",
-      "Luxon",
-      "Leaflet"
-    ],
-    "features": [
-      "Interactive map integration",
-      "Timeline views for historical data",
-      "Dynamic content filtering",
-      "Responsive media carousel for image and video display",
-      "Customizable UI components"
-    ],
-    "architecture": "The project utilizes a modern front-end architecture with components structured under src directory, leveraging React for UI rendering and state management. It uses Vite as a build tool for fast development and optimized production builds. The styling is managed via TailwindCSS for utility-first CSS, and the project configuration is handled through various config files like vite.config.ts and tailwind.config.js.",
-    "complexity": "Medium"
-  },
-  {
-    "name": "backend",
-    "year": 2024,
-    "purpose": "This project serves as the backend system for the Memento application, designed to manage and serve multimedia memories with support for metadata extraction, geolocation tagging, and image processing. It provides a robust API for uploading and querying multimedia content, integrating with external services for enhanced functionality.",
-    "technologies": [
-      "Python",
-      "FastAPI",
-      "Docker",
-      "Elasticsearch",
-      "Geoapify",
-      "Poetry",
-      "Caddy"
-    ],
-    "features": [
-      "RESTful API for multimedia management",
-      "Integration with Elasticsearch for data storage and retrieval",
-      "Metadata extraction from multimedia files",
-      "Geolocation tagging using Geoapify",
-      "Image processing capabilities",
-      "Environment-specific configuration",
-      "Containerized deployment with Docker"
-    ],
-    "architecture": "The project utilizes a microservices architecture with modular components for different functionalities such as API routing, settings management, and external service integration. It leverages FastAPI for the web framework, structured around a central application instance that routes to various endpoints defined in separate modules.",
-    "complexity": "High"
-  },
-  {
-    "name": "firmware",
-    "year": 2024,
-    "purpose": "This project develops firmware for the Memento device, which integrates a camera and WiFi connectivity on a Seeed Studio XIAO ESP32S3 Sense board. The primary function is to enable the capture and transmission of images over a WiFi network.",
-    "technologies": [
-      "C",
-      "C++",
-      "Arduino IDE",
-      "ESP32"
-    ],
-    "features": [
-      "Camera integration with GPIO pin configuration",
-      "WiFi connectivity setup",
-      "Image capture and processing",
-      "Configuration and management via Arduino IDE"
-    ],
-    "architecture": "The project is structured around the Arduino programming environment, utilizing .ino and .h files for defining the main program logic and configuration settings, respectively. The firmware is specifically tailored for the ESP32 microcontroller, leveraging its GPIO capabilities for camera operations and its networking facilities for WiFi connectivity.",
     "complexity": "Medium"
   },
   {
@@ -200,7 +112,7 @@
     "complexity": "Medium"
   },
   {
-    "name": "XML",
+    "name": "XML-Validator",
     "year": 2024,
     "purpose": "This project is designed to validate XML files against their corresponding XML Schema Definitions (XSDs) to ensure they adhere to specified schema standards. It specifically validates XML documents for buildings and students, confirming their structure and data integrity.",
     "technologies": [
@@ -216,7 +128,7 @@
     "complexity": "Low"
   },
   {
-    "name": "CS-157A-Project-DishSocial",
+    "name": "DishSocial",
     "year": 2024,
     "purpose": "DishSocial is a web-based social networking platform specifically designed for food enthusiasts. It allows users to register, log in, and interact with a community through features like recipe sharing, profile customization, and user settings management. The platform serves as a hub for users to connect over shared culinary interests, exchange recipes, and personalize their user experience.",
     "technologies": [
@@ -262,9 +174,9 @@
     "complexity": "High"
   },
   {
-    "name": "CS-131-Project-iBank",
+    "name": "iBank",
     "year": 2022,
-    "purpose": "CS-131-Project-iBank is a web-based banking application designed to manage user accounts and financial transactions securely. It facilitates the registration of new bank users, handling of user authentication, and supports operations such as balance inquiries and fund transfers between accounts.",
+    "purpose": "A web-based banking application designed to manage user accounts and financial transactions securely. It facilitates the registration of new bank users, handling of user authentication, and supports operations such as balance inquiries and fund transfers between accounts.",
     "technologies": [
       "PHP",
       "HTML",
@@ -284,9 +196,9 @@
     "complexity": "Medium"
   },
   {
-    "name": "Page",
+    "name": "First Page",
     "year": 2021,
-    "purpose": "Page serves as a central platform to showcase various projects created by the developer, Ali Zargari. It features a custom-built transition effect, demonstrating the developer's skills in front-end design and interaction.",
+    "purpose": "Serves as a central platform to showcase various projects. It features a custom-built transition effect, demonstrating skills in front-end design and interaction, without using any front-end frameworks.",
     "technologies": [
       "JavaScript",
       "SCSS",
@@ -327,9 +239,9 @@
     "complexity": "Medium"
   },
   {
-    "name": "TODO-App",
+    "name": "//TODO",
     "year": 2021,
-    "purpose": "The TODO-App is designed to facilitate goal-setting and task management. It allows users to create, manage, and track tasks or goals through a user-friendly web interface. The application emphasizes simplicity and functionality, enabling users to focus on productivity without unnecessary complexity.",
+    "purpose": "The TODO app is designed to facilitate goal-setting and task management. It allows users to create, manage, and track tasks or goals through a user-friendly web interface. The application emphasizes simplicity and functionality, enabling users to focus on productivity without unnecessary complexity.",
     "technologies": [
       "JavaScript",
       "CSS",
