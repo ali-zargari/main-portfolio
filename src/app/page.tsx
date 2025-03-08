@@ -10,8 +10,8 @@ import EasterEgg from '@/components/EasterEgg';
 import TheCost from '@/components/TheCost';
 import GlitchText from '@/components/GlitchText';
 import WarningModal from '@/components/WarningModal';
-import { projects } from '@/data/projects';
 import githubRepoData from '@/data/github_repo_analysis.json';
+import majorProjectsData from '@/data/major_projects.json';
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false });
 
@@ -1060,7 +1060,7 @@ export default function Home() {
 
           {/* Modern horizontal project cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {projects.slice(0, 3).map((project, index) => (
+            {majorProjectsData.projects.map((project, index) => (
               <div 
                 key={project.id}
                 className="group relative rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-[#94A3B8]/20 backdrop-blur-sm bg-black/40 border border-white/10 hover:border-[#94A3B8]/30 h-full flex flex-col"
@@ -1101,7 +1101,7 @@ export default function Home() {
                   </p>
                   
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.slice(0, 3).map((tech, techIndex) => (
+                    {project.tags.slice(0, 3).map((tech: string, techIndex: number) => (
                       <span 
                         key={techIndex} 
                         className="px-2 py-0.5 bg-black text-xs font-mono rounded-full border border-white/10 text-white/80"

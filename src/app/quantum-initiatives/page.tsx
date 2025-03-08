@@ -7,7 +7,7 @@ import EasterEgg from '@/components/EasterEgg';
 import Navigation from '@/components/Navigation';
 import TheCost from '@/components/TheCost';
 import GlitchText from '@/components/GlitchText';
-import { projects, projectDetails } from '@/data/projects';
+import majorProjectsData from '@/data/major_projects.json';
 
 // Define types for project and project details
 interface Project {
@@ -40,6 +40,10 @@ export default function SignificantProjects() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  // Extract projects and projectDetails from the JSON file
+  const projects: Project[] = majorProjectsData.projects;
+  const projectDetails: Record<string, ProjectDetail> = majorProjectsData.projectDetails;
 
   useEffect(() => {
     setTimeout(() => {
