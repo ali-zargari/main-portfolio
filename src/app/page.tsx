@@ -904,7 +904,7 @@ export default function Home() {
     setSubmitError('');
     
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1502,7 +1502,7 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="font-medium mb-1 text-lg">GitHub</div>
-                    <a href="https://github.com/alizargari" target="_blank" rel="noopener noreferrer" className="text-[#94A3B8] hover:text-white transition-colors">
+                    <a href="https://github.com/ali-zargari" target="_blank" rel="noopener noreferrer" className="text-[#94A3B8] hover:text-white transition-colors">
                       github.com/alizargari
                     </a>
                   </div>

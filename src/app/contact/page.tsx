@@ -18,7 +18,7 @@ export default function Contact() {
     setError('');
     
     try {
-      const response = await fetch('/api/contact', {
+      const response = await fetch('/api/send-email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
