@@ -280,10 +280,11 @@ export default function OriginStory() {
                       {/* Year badge */}
                       <div className="mb-6">
                         <span 
-                          className="text-base font-mono px-4 py-2 rounded-full border border-white/10 shadow-lg" 
+                          className="text-base font-mono px-6 py-2 rounded-full backdrop-blur-sm border border-[#1E293B] shadow-lg" 
                           style={{ 
-                            background: `linear-gradient(135deg, ${event.color}40, transparent)`,
-                            color: event.color 
+                            background: `linear-gradient(to right, rgba(0,0,0,0.8), rgba(10,15,30,0.6))`,
+                            color: event.color,
+                            boxShadow: `0 0 15px ${event.color}40, inset 0 0 10px ${event.color}20`
                           }}
                         >
                           {event.year}
@@ -296,9 +297,12 @@ export default function OriginStory() {
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
                         viewport={{ once: true, margin: "-100px" }}
-                        className={`w-full max-w-4xl bg-black/60 backdrop-blur-sm border border-white/10 p-8 rounded-xl ${
+                        className={`w-full max-w-4xl bg-gradient-to-br from-black/80 to-black/60 backdrop-blur-sm border border-white/10 p-8 rounded-xl ${
                           activeEvent === index ? 'shadow-lg shadow-[#9B59B6]/20' : ''
                         }`}
+                        style={{
+                          boxShadow: activeEvent === index ? `0 5px 20px ${event.color}20` : ''
+                        }}
                       >
                         <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center" style={{ color: event.color }}>
                           {event.title}
@@ -313,6 +317,10 @@ export default function OriginStory() {
                             <span 
                               key={skillIndex}
                               className="px-3 py-1.5 bg-black/50 text-sm font-mono rounded-full border border-white/10 text-white/80 hover:border-white/30 transition-colors"
+                              style={{
+                                borderColor: `${event.color}30`,
+                                backgroundColor: `${event.color}10`
+                              }}
                             >
                               {skill}
                             </span>
