@@ -158,7 +158,7 @@ function ParticleField({ count = 20000, mouse, scrollY }: ParticleFieldProps) {
   );
 }
 
-export default function ThreeBackground() {
+export default function ThreeBackground({ intensity = 1, speed = 1 }: { intensity?: number; speed?: number }) {
   const mouse = useRef<[number, number]>([0, 0]);
   const scrollY = useRef(0);
   const [isClient, setIsClient] = useState(false);
@@ -197,8 +197,8 @@ export default function ThreeBackground() {
       <Canvas 
       style={{background: '#060612'}}
       camera={{ position: [0, 0, 5], fov: 90 }}> {/* Increased FOV for wider view */}
-        <ambientLight intensity={5} /> {/* Increased light intensity */}
-        <ParticleField mouse={mouse} scrollY={scrollY} />
+        <ambientLight intensity={5 * intensity} /> {/* Multiplied by intensity prop */}
+        <ParticleField mouse={mouse} scrollY={scrollY} count={Math.floor(20000 * speed)} /> {/* Adjusted count based on speed */}
         <fog attach="fog" args={['#0f0f1a', 10, 25]} /> {/* Adjusted fog for better depth perception */}
       </Canvas>
     </div>
