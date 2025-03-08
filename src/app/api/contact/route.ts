@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
-export const runtime = 'edge';
+// fix for cloudflare
+export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   try {
