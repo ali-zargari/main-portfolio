@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gradient PNG Creator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .preview {
+            width: 100%;
+            height: 240px;
+            margin: 20px 0;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADwCAYAAADfmSl8AAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAA8AAAAADM6C01AAABhUlEQVQoFY2SPW7DMAxGRVX+AQYLZ0tO0KUHydjTtPc/QPYCHWJ7KmI5dpwfdJAhXSxZ5CPfffJX/GJmn71zn/OUwrJt7Eo/mBOLNZbdOGb3OI7R+3HZw9tG+nPM03Bpk76HbB0zEDdQsOjChZ8IuPUQHsJAetMz2fFM9pD/w/h+gHCYxnkIbXNeWcbtIbxzqU1I3Bb3B5+rXi+0ZUrR57KWsYpXUHB7bQTefQhhDsrn7OYEjXNQYIqgDdZWBBQ7ZlPE3WcSDhu4JEqkRPBEOFgQHi2E1ypJyOKFLTLN6mxCsAQBrHYFtgDmjQTIFBFIZnyRIxOJRPSgBEEkYPXnAGLCCuTBZARFxzYFATMzgJCACIGRgCU0hP8gIDYgQiEIIxogUyGIcgsCMigFMQIgE6IXAoIPRBM0MkBWIQgLIBQCQKZCsAKEQkAFMkOkQlQIQhC5EIxMAOQlMNJ3A1YLlPXxRaWu7/Ovr9zk9eMW1/Xxo/jx/Xd8vX1UoK/XX5bXXXrfLZrV/gcgGShUQ22K3QAAAABJRU5ErkJggg==");
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            border: 1px solid #ddd;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Transparent to Black Gradient</h1>
+    <p>This is a preview of the gradient image (1px wide by 240px tall):</p>
+    <div class="preview"></div>
+    <p>Click the button below to download the PNG file:</p>
+    <button onclick="downloadPNG()">Download gradient-fade.png</button>
+
+    <script>
+        function downloadPNG() {
+            const base64Data = "iVBORw0KGgoAAAANSUhEUgAAAAEAAADwCAYAAADfmSl8AAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAA8AAAAADM6C01AAABhUlEQVQoFY2SPW7DMAxGRVX+AQYLZ0tO0KUHydjTtPc/QPYCHWJ7KmI5dpwfdJAhXSxZ5CPfffJX/GJmn71zn/OUwrJt7Eo/mBOLNZbdOGb3OI7R+3HZw9tG+nPM03Bpk76HbB0zEDdQsOjChZ8IuPUQHsJAetMz2fFM9pD/w/h+gHCYxnkIbXNeWcbtIbxzqU1I3Bb3B5+rXi+0ZUrR57KWsYpXUHB7bQTefQhhDsrn7OYEjXNQYIqgDdZWBBQ7ZlPE3WcSDhu4JEqkRPBEOFgQHi2E1ypJyOKFLTLN6mxCsAQBrHYFtgDmjQTIFBFIZnyRIxOJRPSgBEEkYPXnAGLCCuTBZARFxzYFATMzgJCACIGRgCU0hP8gIDYgQiEIIxogUyGIcgsCMigFMQIgE6IXAoIPRBM0MkBWIQgLIBQCQKZCsAKEQkAFMkOkQlQIQhC5EIxMAOQlMNJ3A1YLlPXxRaWu7/Ovr9zk9eMW1/Xxo/jx/Xd8vX1UoK/XX5bXXXrfLZrV/gcgGShUQ22K3QAAAABJRU5ErkJggg==";
+            const link = document.createElement('a');
+            link.href = `data:image/png;base64,${base64Data}`;
+            link.download = 'gradient-fade.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html> 

@@ -1031,7 +1031,7 @@ export default function Home() {
       </section>
 
       {/* Brief introduction section with subtle parallax */}
-      <section className="py-24 relative z-10">
+      <section className="py-24 bg-black/30 relative z-10">
         <div className="max-w-6xl mx-auto px-4" style={parallaxStyle(0.05)}>
           {/* Section header with minimal styling */}
           <div className="mb-10 flex items-center justify-between">
@@ -1425,12 +1425,24 @@ export default function Home() {
       </section>
 
       {/* Contact Section - Redesigned */}
-      <section className="py-32 relative z-10 overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-[#0f0f0f] to-black z-0"></div>
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-repeat opacity-5 z-0"></div>
+      <section className="py-32 bg-black/30 relative z-10 overflow-hidden">
+        {/* Only PNG gradient and black background - moved down slightly */}
+        <div 
+          className="absolute inset-x-0 top-[-50px] h-[300px] z-[5]" 
+          style={{ 
+            backgroundImage: 'url("/images/gradient-fade.png")',
+            backgroundSize: '100% 100%',
+            backgroundRepeat: 'no-repeat'
+          }}
+        ></div>
         
-        <div className="container mx-auto px-4 relative z-10">
+        {/* Black background below the gradient - adjusted to match new gradient position */}
+        <div className="absolute inset-x-0 top-[250px] bottom-0 bg-black z-[5]"></div>
+        
+        {/* Grid pattern on top of everything */}
+        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-repeat opacity-5 z-[6]"></div>
+        
+        <div className="container mx-auto px-4 relative z-[10]">
           <div className="max-w-4xl mx-auto">
             {/* Section heading */}
             <div className="text-center mb-16" style={parallaxStyle(0.04)}>
