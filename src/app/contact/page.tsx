@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import emailjs from '@emailjs/browser';
+import Script from 'next/script';
 
 export default function Contact() {
   const [name, setName] = useState('');
@@ -11,26 +13,57 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const formRef = useRef<HTMLFormElement>(null);
+  
+  // Initialize EmailJS
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Make sure we're on the client side
+      (window as any).emailjs = emailjs;
+    }
+  }, []);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
     
+    // Get credentials from environment variables
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    
+    // Validate that we have the required credentials
+    if (!serviceId || !templateId || !publicKey) {
+      setError('EmailJS configuration is missing. Please check your environment variables.');
+      setIsLoading(false);
+      return;
+    }
+    
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, message }),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
+      if (!formRef.current) {
+        throw new Error('Form reference is not available');
       }
+      
+      // Process the form to ensure sender info is included
+      const formElement = formRef.current;
+      const originalMessage = formElement.querySelector('[name="message"]') as HTMLTextAreaElement;
+      
+      if (originalMessage) {
+        // Create a formatted message that includes sender info at the top
+        const enhancedMessage = `FROM: ${name} (${email})\n\n${originalMessage.value}`;
+        originalMessage.value = enhancedMessage;
+      }
+      
+      // Using sendForm method with the actual DOM form
+      const result = await emailjs.sendForm(
+        serviceId,
+        templateId,
+        formRef.current,
+        publicKey
+      );
+      
+      console.log('Email sent successfully:', result.text);
       
       // Show success message
       setSubmitted(true);
@@ -41,8 +74,11 @@ export default function Contact() {
         setEmail('');
         setMessage('');
       }, 5000);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred while sending your message');
+    } catch (err: any) {
+      console.error('EmailJS error:', err);
+      // Display detailed error for debugging
+      const errorMessage = err.text || err.message || 'Failed to send email. Please try again later.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -50,6 +86,16 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen bg-black text-white pt-24 pb-16 relative">
+      <Script 
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+        strategy="beforeInteractive"
+        onLoad={() => {
+          const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+          if (publicKey) {
+            (window as any).emailjs.init(publicKey);
+          }
+        }}
+      />
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a1a] to-black z-0"></div>
       
@@ -106,18 +152,22 @@ export default function Contact() {
                 <p className="text-white">Your message has been sent successfully! I'll get back to you soon.</p>
               </motion.div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                 {error && (
                   <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 text-white">
                     <p>{error}</p>
                   </div>
                 )}
                 
+                {/* Hidden field for recipient email */}
+                <input type="hidden" name="to_email" value="ali.zargari1@outlook.com" />
+                
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-1">Name</label>
                   <input
                     type="text"
                     id="name"
+                    name="user_name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
@@ -132,6 +182,7 @@ export default function Contact() {
                   <input
                     type="email"
                     id="email"
+                    name="user_email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -145,6 +196,7 @@ export default function Contact() {
                   <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-1">Message</label>
                   <textarea
                     id="message"
+                    name="message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     required

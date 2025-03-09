@@ -12,6 +12,8 @@ import GlitchText from '@/components/GlitchText';
 import WarningModal from '@/components/WarningModal';
 import githubRepoData from '@/data/github_repo_analysis.json';
 import majorProjectsData from '@/data/major_projects.json';
+import emailjs from '@emailjs/browser';
+import Script from 'next/script';
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false });
 
@@ -894,32 +896,53 @@ export default function Home() {
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
   const [contactMessage, setContactMessage] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const contactFormRef = useRef<HTMLFormElement>(null);
   
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitError('');
     
+    // Get credentials from environment variables
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    
+    // Validate that we have the required credentials
+    if (!serviceId || !templateId || !publicKey) {
+      setSubmitError('EmailJS configuration is missing. Please check your environment variables.');
+      setIsSubmitting(false);
+      return;
+    }
+    
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          name: contactName, 
-          email: contactEmail, 
-          message: contactMessage 
-        }),
-      });
+      if (!contactFormRef.current) {
+        throw new Error('Form reference is not available');
+      }
       
-      const data = await response.json();
+      // Process the form to ensure sender info is included
+      const formElement = contactFormRef.current;
+      const originalMessage = formElement.querySelector('[name="message"]') as HTMLTextAreaElement;
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
+      if (originalMessage) {
+        // Create a formatted message that includes sender info at the top
+        const formattedMessage = `FROM: ${contactName} (${contactEmail})\n\n${originalMessage.value}`;
+        originalMessage.value = formattedMessage;
+      }
+      
+      // Using EmailJS to send the form directly
+      const result = await emailjs.sendForm(
+        serviceId,
+        templateId,
+        contactFormRef.current,
+        publicKey
+      );
+      
+      if (result.status !== 200) {
+        throw new Error(`Failed to send message: Status ${result.status}`);
       }
       
       // Show success message
@@ -941,7 +964,17 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="bg-black min-h-screen text-white antialiased relative overflow-hidden">
+      <Script 
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+        strategy="beforeInteractive"
+        onLoad={() => {
+          const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+          if (publicKey) {
+            (window as any).emailjs.init(publicKey);
+          }
+        }}
+      />
       {/* Three.js Background */}
       <ThreeBackground />
       
@@ -1585,51 +1618,54 @@ export default function Home() {
                 <p className="text-white">Your message has been sent successfully!</p>
               </div>
             ) : (
-              <form onSubmit={handleContactSubmit} className="space-y-4">
+              <form onSubmit={handleContactSubmit} ref={contactFormRef} className="space-y-4">
                 {submitError && (
                   <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-3 text-white text-sm">
                     <p>{submitError}</p>
                   </div>
                 )}
                 
+                {/* Hidden field for recipient email */}
+                <input type="hidden" name="to_email" value="ali.zargari1@outlook.com" />
+                
                 <div>
-                  <label htmlFor="modal-name" className="block text-sm font-medium text-white/80 mb-1">Name</label>
+                  <label htmlFor="contact-name" className="block text-sm text-white/70 mb-1 font-mono">Name</label>
                   <input
                     type="text"
-                    id="modal-name"
+                    id="contact-name"
+                    name="user_name"
+                    className="w-full bg-white/5 rounded-md border border-white/10 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#9B59B6] placeholder-white/20 text-white"
+                    placeholder="Your name"
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#9B59B6] focus:border-transparent transition-all"
-                    placeholder="Your name"
                     disabled={isSubmitting}
                   />
                 </div>
-                
                 <div>
-                  <label htmlFor="modal-email" className="block text-sm font-medium text-white/80 mb-1">Email</label>
+                  <label htmlFor="contact-email" className="block text-sm text-white/70 mb-1 font-mono">Email</label>
                   <input
                     type="email"
-                    id="modal-email"
+                    id="contact-email"
+                    name="user_email"
+                    className="w-full bg-white/5 rounded-md border border-white/10 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#9B59B6] placeholder-white/20 text-white"
+                    placeholder="Your email"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#9B59B6] focus:border-transparent transition-all"
-                    placeholder="Your email address"
                     disabled={isSubmitting}
                   />
                 </div>
-                
                 <div>
-                  <label htmlFor="modal-message" className="block text-sm font-medium text-white/80 mb-1">Message</label>
+                  <label htmlFor="contact-message" className="block text-sm text-white/70 mb-1 font-mono">Message</label>
                   <textarea
-                    id="modal-message"
+                    id="contact-message"
+                    name="message"
+                    className="w-full bg-white/5 rounded-md border border-white/10 px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#9B59B6] placeholder-white/20 text-white h-24"
+                    placeholder="Your message"
                     value={contactMessage}
                     onChange={(e) => setContactMessage(e.target.value)}
                     required
-                    rows={4}
-                    className="w-full bg-white/5 border border-white/10 rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#9B59B6] focus:border-transparent transition-all"
-                    placeholder="Your message"
                     disabled={isSubmitting}
                   ></textarea>
                 </div>
@@ -1664,6 +1700,6 @@ export default function Home() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

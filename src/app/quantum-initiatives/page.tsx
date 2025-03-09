@@ -10,6 +10,8 @@ import Navigation from '@/components/Navigation';
 import TheCost from '@/components/TheCost';
 import GlitchText from '@/components/GlitchText';
 import majorProjectsData from '@/data/major_projects.json';
+import emailjs from '@emailjs/browser';
+import Script from 'next/script';
 
 const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), { ssr: false });
 
@@ -48,6 +50,7 @@ export default function QuantumInitiatives() {
   const heroRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const detailsRef = useRef<HTMLDivElement>(null);
+  const contactFormRef = useRef<HTMLFormElement>(null);
   
   // Extract projects and projectDetails from the JSON file
   const projects: Project[] = majorProjectsData.projects;
@@ -96,23 +99,43 @@ export default function QuantumInitiatives() {
     setIsSubmitting(true);
     setSubmitError('');
     
+    // Get credentials from environment variables
+    const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    
+    // Validate that we have the required credentials
+    if (!serviceId || !templateId || !publicKey) {
+      setSubmitError('EmailJS configuration is missing. Please check your environment variables.');
+      setIsSubmitting(false);
+      return;
+    }
+    
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          name: contactName, 
-          email: contactEmail, 
-          message: contactMessage 
-        }),
-      });
+      if (!contactFormRef.current) {
+        throw new Error('Form reference is not available');
+      }
       
-      const data = await response.json();
+      // Process the form to ensure sender info is included
+      const formElement = contactFormRef.current;
+      const originalMessage = formElement.querySelector('[name="message"]') as HTMLTextAreaElement;
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
+      if (originalMessage) {
+        // Create a formatted message that includes sender info at the top
+        const formattedMessage = `FROM: ${contactName} (${contactEmail})\n\n${originalMessage.value}`;
+        originalMessage.value = formattedMessage;
+      }
+      
+      // Using EmailJS to send the form directly
+      const result = await emailjs.sendForm(
+        serviceId,
+        templateId,
+        contactFormRef.current,
+        publicKey
+      );
+      
+      if (result.status !== 200) {
+        throw new Error(`Failed to send message: Status ${result.status}`);
       }
       
       // Show success message
@@ -147,7 +170,22 @@ export default function QuantumInitiatives() {
   };
 
   return (
-    <main className="min-h-screen bg-background text-foreground relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white">
+      <Script 
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+        strategy="beforeInteractive"
+        onLoad={() => {
+          const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+          if (publicKey) {
+            (window as any).emailjs.init(publicKey);
+          }
+        }}
+      />
+
+      {/* Background elements */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0D0B20] to-black z-0"></div>
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 z-0"></div>
+      
       {/* Common Components */}
       <SubliminalMessages />
       <EasterEgg />
@@ -591,15 +629,23 @@ export default function QuantumInitiatives() {
                 <p className="text-white/60 text-sm">I'll get back to you as soon as possible.</p>
               </div>
             ) : (
-              <form onSubmit={handleContactSubmit}>
+              <form onSubmit={handleContactSubmit} ref={contactFormRef}>
+                {submitError && (
+                  <div className="text-red-400 mb-4 text-sm">{submitError}</div>
+                )}
+                
+                {/* Hidden field for recipient email */}
+                <input type="hidden" name="to_email" value="ali.zargari1@outlook.com" />
+                
                 <div className="mb-4">
                   <label htmlFor="name" className="block text-sm font-medium text-white/70 mb-1">Name</label>
                   <input
                     type="text"
                     id="name"
+                    name="user_name"
+                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[#9B59B6]"
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-[#9B59B6]"
                     required
                   />
                 </div>
@@ -609,9 +655,10 @@ export default function QuantumInitiatives() {
                   <input
                     type="email"
                     id="email"
+                    name="user_email"
+                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[#9B59B6]"
                     value={contactEmail}
                     onChange={(e) => setContactEmail(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-[#9B59B6]"
                     required
                   />
                 </div>
@@ -620,18 +667,14 @@ export default function QuantumInitiatives() {
                   <label htmlFor="message" className="block text-sm font-medium text-white/70 mb-1">Message</label>
                   <textarea
                     id="message"
+                    name="message"
+                    rows={4}
+                    className="w-full bg-white/5 border border-white/10 rounded px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[#9B59B6]"
                     value={contactMessage}
                     onChange={(e) => setContactMessage(e.target.value)}
-                    className="w-full px-3 py-2 bg-black/30 border border-white/10 rounded-md text-white focus:outline-none focus:ring-1 focus:ring-[#9B59B6] min-h-[100px]"
                     required
                   ></textarea>
                 </div>
-                
-                {submitError && (
-                  <div className="mb-4 p-3 bg-red-900/30 border border-red-700 rounded-md text-sm text-white">
-                    {submitError}
-                  </div>
-                )}
                 
                 <button
                   type="submit"
@@ -652,6 +695,6 @@ export default function QuantumInitiatives() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 } 

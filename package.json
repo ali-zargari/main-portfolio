@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.8",
+    "@emailjs/browser": "^4.4.1",
     "@eslint/eslintrc": "^3",
     "@react-spring/three": "^9.7.5",
     "@react-spring/web": "^9.7.5",
